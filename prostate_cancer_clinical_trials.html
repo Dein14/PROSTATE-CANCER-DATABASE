@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Prostate Cancer Clinical Trial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nejm-red:#A6192E;
+    --nejm-red-dark:#7C1121;
+    --nejm-red-tint:#FBEAEC;
+    --ink:#1B1B1B;
+    --ink-soft:#4A4842;
+    --gray:#7A776E;
+    --gray-line:#DFDACB;
+    --paper:#FCFBF6;
+    --paper-card:#FFFFFF;
+    --paper-alt:#F4F1E7;
+    --green:#1E6B3C;
+    --green-tint:#E7F2EA;
+    --blue:#28507A;
+    --blue-tint:#EAF0F7;
+    --amber-tint:#FBF3E3;
+    --amber:#8A5A00;
+
+    /* stately per-category colors */
+    --c-nmCRPC: #2C4A6E;        /* deep slate blue */
+    --c-nmCRPC-tint: #E7ECF3;
+    --c-mCSPC: #285C4D;         /* deep forest teal-green */
+    --c-mCSPC-tint: #E6EFEC;
+    --c-mCRPC: #6E2743;         /* deep wine burgundy */
+    --c-mCRPC-tint: #F1E6EB;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Noto Sans TC','Source Serif 4',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:48px;
+  }
+  a{color:inherit;}
+
+  /* ---------- Sticky top group (single sticky container avoids offset/overlap bugs on mobile) ---------- */
+  .sticky-top{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper);
+  }
+
+  header.masthead{
+    background:var(--paper-card);
+    border-bottom:3px solid var(--nejm-red);
+    padding:14px 16px 12px;
+  }
+  .masthead-inner{max-width:720px; margin:0 auto;}
+  .kicker{
+    font-family:'Noto Sans TC',sans-serif;
+    font-size:10.5px; letter-spacing:.14em; font-weight:700;
+    color:var(--nejm-red); text-transform:uppercase; margin-bottom:2px;
+  }
+  h1.title{
+    font-family:'Noto Serif TC', serif;
+    font-weight:800;
+    font-size:22px;
+    line-height:1.25;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:.01em;
+  }
+
+  /* ---------- Search ---------- */
+  .search-wrap{
+    background:var(--paper); padding:10px 16px 8px;
+  }
+  .search-inner{max-width:720px; margin:0 auto; position:relative;}
+  input.search-box{
+    width:100%;
+    padding:11px 38px 11px 38px;
+    border-radius:9px;
+    border:1.4px solid var(--gray-line);
+    background:var(--paper-card);
+    font-size:16px;
+    font-family:inherit;
+    color:var(--ink);
+    outline:none;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  input.search-box:focus{ border-color:var(--nejm-red); }
+  .search-icon{
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    font-size:15px; color:var(--gray); pointer-events:none;
+  }
+  .clear-btn{
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    background:var(--gray-line); color:var(--ink-soft); border:none;
+    width:24px; height:24px; border-radius:50%; font-size:13px; line-height:1;
+    display:none; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .search-hint{
+    max-width:720px; margin:6px auto 0; font-size:12px; color:var(--gray);
+    display:none; padding:0 2px;
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs-wrap{
+    background:var(--paper);
+    padding:8px 16px 10px;
+    border-bottom:1px solid var(--gray-line);
+  }
+  .tabs-inner{
+    max-width:720px; margin:0 auto;
+    display:flex; gap:8px;
+  }
+  .tab-btn{
+    flex:1;
+    text-align:center;
+    padding:9px 4px;
+    border-radius:8px;
+    border:1.4px solid var(--gray-line);
+    background:var(--paper-card);
+    font-family:'Noto Sans TC',sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .tab-btn .tcount{
+    display:block; font-weight:500; font-size:10.5px; color:var(--gray); margin-top:1px;
+  }
+  .tab-btn[data-tab="nmCRPC"].active{ background:var(--c-nmCRPC); border-color:var(--c-nmCRPC); color:#fff; }
+  .tab-btn[data-tab="mCSPC"].active{ background:var(--c-mCSPC); border-color:var(--c-mCSPC); color:#fff; }
+  .tab-btn[data-tab="mCRPC"].active{ background:var(--c-mCRPC); border-color:var(--c-mCRPC); color:#fff; }
+  .tab-btn.active .tcount{ color:rgba(255,255,255,.75); }
+
+  /* ---------- Content ---------- */
+  main{max-width:720px; margin:0 auto; padding:14px 14px 8px;}
+  .section-label{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin:6px 4px 10px;
+  }
+  .section-label .stitle{
+    font-family:'Noto Serif TC', serif; font-weight:700; font-size:15px; color:var(--ink);
+  }
+  .section-label .scount{ font-size:12px; color:var(--gray); font-weight:500; }
+  .cat-chip{
+    display:inline-block; font-size:10px; font-weight:700; letter-spacing:.04em;
+    padding:2px 7px; border-radius:5px; margin-right:6px; vertical-align:middle;
+  }
+  .cat-chip.nmCRPC{ background:var(--c-nmCRPC-tint); color:var(--c-nmCRPC); }
+  .cat-chip.mCSPC{ background:var(--c-mCSPC-tint); color:var(--c-mCSPC); }
+  .cat-chip.mCRPC{ background:var(--c-mCRPC-tint); color:var(--c-mCRPC); }
+
+  /* ---------- Card ---------- */
+  .card{
+    background:var(--paper-card);
+    border:1px solid var(--gray-line);
+    border-left:5px solid var(--gray-line);
+    border-radius:10px;
+    margin-bottom:12px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.03);
+  }
+  .card.cat-nmCRPC{ border-left-color:var(--c-nmCRPC); }
+  .card.cat-mCSPC{ border-left-color:var(--c-mCSPC); }
+  .card.cat-mCRPC{ border-left-color:var(--c-mCRPC); }
+
+  .card-head{
+    padding:14px 14px;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:rgba(166,25,46,0.08);
+    user-select:none;
+    touch-action:manipulation;
+  }
+  .card-head-left{flex:1; min-width:0;}
+  .trial-name{
+    font-family:'Noto Serif TC', serif;
+    font-weight:800; font-size:17px; line-height:1.3; color:var(--ink);
+    margin:0 0 4px 0;
+    word-break:keep-all;
+  }
+  .trial-meta-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px;
+    font-size:12px; color:var(--gray); margin-bottom:5px;
+  }
+  .trial-year{
+    font-weight:700; color:var(--ink-soft);
+  }
+  .dot{ color:var(--gray-line); }
+  .trial-regimen{
+    font-size:13.5px; color:var(--ink-soft); font-weight:600;
+    line-height:1.4;
+  }
+  .status-badge{
+    flex-shrink:0;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding-top:2px;
+  }
+  .status-icon{
+    width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; font-weight:900; color:#fff;
+  }
+  .status-icon.positive{ background:var(--green); }
+  .status-icon.negative{ background:#9A2E2E; }
+  .status-text{
+    font-size:9.5px; font-weight:700; letter-spacing:.03em;
+  }
+  .status-text.positive{ color:var(--green); }
+  .status-text.negative{ color:#9A2E2E; }
+  .chevron{
+    margin-left:2px; color:var(--gray); font-size:12px;
+    transition:transform .2s ease; flex-shrink:0; align-self:center;
+  }
+  .card.expanded .chevron{ transform:rotate(180deg); }
+
+  .card-body{
+    display:none;
+    padding:2px 14px 16px;
+    border-top:1px dashed var(--gray-line);
+  }
+  .card.expanded .card-body{ display:block; }
+
+  .blk{
+    margin-top:14px;
+    border-radius:8px;
+    padding:10px 12px 11px;
+  }
+  .blk-title{
+    display:flex; align-items:center; gap:6px;
+    font-family:'Noto Sans TC',sans-serif;
+    font-weight:700; font-size:12.5px;
+    letter-spacing:.02em;
+    margin-bottom:7px;
+  }
+  .blk ul{ margin:0; padding-left:18px; }
+  .blk li{
+    font-size:14px; line-height:1.62; color:var(--ink); margin-bottom:5px;
+  }
+  .blk li:last-child{ margin-bottom:0; }
+  .blk li strong{ color:var(--nejm-red-dark); font-weight:700; }
+  .blk.neutral{ background:var(--paper-alt); }
+  .blk.neutral .blk-title{ color:var(--ink-soft); }
+  .blk.outcome{ background:var(--nejm-red-tint); }
+  .blk.outcome .blk-title{ color:var(--nejm-red-dark); }
+  .blk.outcome li strong{ color:var(--nejm-red-dark); }
+  .blk.importance{ background:var(--amber-tint); border:1px solid #EBD9A8; }
+  .blk.importance .blk-title{ color:var(--amber); }
+  .blk.updates{ background:var(--blue-tint); }
+  .blk.updates .blk-title{ color:var(--blue); }
+  .blk.followup{
+    background:var(--green-tint); display:flex; align-items:center; gap:8px;
+    padding:10px 12px;
+  }
+  .blk.followup .blk-title{ margin-bottom:0; color:var(--green); }
+  .blk.followup .fu-value{ font-size:14px; font-weight:700; color:var(--ink); }
+
+  .no-results{
+    text-align:center; padding:50px 20px; color:var(--gray);
+  }
+  .no-results .nr-icon{ font-size:34px; margin-bottom:10px; }
+  .no-results .nr-text{ font-size:14px; }
+
+  footer.foot{
+    max-width:720px; margin:20px auto 0; padding:14px 16px 6px;
+    border-top:1px solid var(--gray-line);
+    font-size:11px; color:var(--gray); line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="sticky-top">
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="kicker">Genitourinary Oncology · Evidence Digest</div>
+      <h1 class="title">Prostate Cancer Clinical Trial</h1>
+    </div>
+  </header>
+
+  <div class="search-wrap">
+    <div class="search-inner">
+      <span class="search-icon">🔍</span>
+      <input id="searchInput" class="search-box" type="text" inputmode="search"
+        placeholder="搜尋試驗名稱、藥物、regimen 關鍵字…" autocomplete="off">
+      <button class="clear-btn" id="clearBtn" aria-label="清除搜尋">✕</button>
+    </div>
+    <div class="search-hint" id="searchHint"></div>
+  </div>
+
+  <div class="tabs-wrap">
+    <div class="tabs-inner" id="tabsInner"></div>
+  </div>
+</div>
+
+<main id="mainContent"></main>
+
+<footer class="foot">
+  資料整理自臨床試驗文獻摘要，僅供學術與臨床參考，非取代原始文獻或臨床指引判讀。HR＝Hazard Ratio；OS＝Overall Survival；rPFS＝Radiographic Progression-Free Survival；MFS＝Metastasis-Free Survival；ARTA/ARPI＝雄性素受體路徑抑制劑；HRR＝同源重組修復基因。
+</footer>
+
+<script>
+const TRIALS = [{"cat":"mCSPC","name":"CHAARTED (E3805)","year":"2015 / 2018","status":"positive","regimenShort":"ADT + Docetaxel","phase":"Phase 3","arms":["實驗組：ADT + Docetaxel","對照組：ADT alone（單用去勢治療）"],"regimen":["Docetaxel 75 mg/m² IV，每 3 週一次，共 6 個療程（不併用每日 prednisone）","ADT：持續使用至疾病惡化"],"inclusion":["mCSPC / mHSPC 男性患者","ECOG PS 0–2","依腫瘤負擔分層：High-volume（內臟轉移及/或 ≥4 處骨轉移，其中 ≥1 處位於脊椎/骨盆外）vs. Low-volume"],"exclusion":["轉移性疾病曾接受 ADT > 120 天，或曾接受全身性化療","≥ Grade 2 周邊神經病變"],"outcome":["**Primary Endpoint：Overall Survival (OS)**","Primary Analysis（追蹤 28.9 mo）：OS 57.6 vs. 44.0 個月（**HR 0.61**；95% CI 0.47–0.80；p<0.001）","Mature Analysis（追蹤 53.7 mo）：OS 57.6 vs. 47.2 個月（**HR 0.72**；p=0.0018）","High-volume 亞群：OS 51.2 vs. 34.4 個月（**HR 0.63**；p<0.001）","Low-volume 亞群：OS 63.5 個月 vs. Not Reached（HR 1.04；p=0.86，**無顯著差異**）"],"followup":"53.7 個月（mature analysis）","importance":["奠定前列腺癌治療史上的重大里程碑，首度證實「早期化療聯合去勢治療（ADT + Docetaxel）」能顯著延長 mCSPC 患者的總生存期（OS）","開創「腫瘤負擔量（High-volume vs. Low-volume）」分層觀念，證實化療存活獲益主要集中於高腫瘤負擔患者"],"updates":["2018 JCO 長期追蹤更新確認 high-volume 疾病中明確的 OS 獲益，但 low-volume 患者未達統計顯著性"]},{"cat":"mCSPC","name":"LATITUDE","year":"2017 / 2019","status":"positive","regimenShort":"ADT + Abiraterone + Prednisone","phase":"Phase 3","arms":["實驗組：ADT + Abiraterone Acetate + Prednisone","對照組：ADT + Dual Placebo"],"regimen":["Abiraterone Acetate 1000 mg PO QD","Prednisone 5 mg PO QD","ADT：持續使用至疾病惡化"],"inclusion":["初診斷、de novo 高風險 mCSPC","高風險定義（需符合以下 3 項中至少 2 項）：① Gleason score ≥8　② ≥3 處骨轉移病灶　③ 可測量之內臟轉移","ECOG PS 0–2"],"exclusion":["轉移性疾病曾接受 ADT > 3 個月","曾接受化療或新型 AR 標靶藥物","嚴重心臟功能不全或未控制之高血壓"],"outcome":["**Co-Primary Endpoints：OS 與 rPFS**","Final OS Analysis（追蹤 51.8 mo）：","　OS：53.3 vs. 36.5 個月（**HR 0.66**；95% CI 0.56–0.78；p<0.0001）","　rPFS：33.0 vs. 14.8 個月（**HR 0.47**；95% CI 0.39–0.55；p<0.001）"],"followup":"51.8 個月（final analysis）","importance":["確立新世代口服抗雄性素藥物（ARPI）Abiraterone 加 ADT 於「初診斷高風險 de novo mCSPC」患者的第一線標準治療地位","定義了臨床廣泛使用的「LATITUDE High-Risk」標準，引領 mCSPC 進入口服標靶劑量強化治療新世代"],"updates":["Final OS analysis 發表於 Lancet Oncology（2019），證實死亡風險持續降低 34%，並支持安慰劑組患者 crossover 解盲"]},{"cat":"mCSPC","name":"STAMPEDE (Arm C & Arm G)","year":"2016 / 2017","status":"positive","regimenShort":"SOC + Docetaxel / + Abiraterone","phase":"Phase 2/3（MAMS 多臂多階段平台試驗）","arms":["對照組（SOC）：ADT ≥2 年（M0 病患可併局部放療）","Arm C：SOC + Docetaxel","Arm G：SOC + Abiraterone Acetate + Prednisolone"],"regimen":["Arm C：Docetaxel 75 mg/m² IV q3w × 6 個療程 + Prednisolone 10 mg PO QD","Arm G：Abiraterone 1000 mg PO QD + Prednisolone 5 mg PO QD（至疾病惡化）"],"inclusion":["新診斷 M1 轉移性前列腺癌，或高風險 N1/M0，或具高風險特徵之復發疾病","ECOG PS 0–2"],"exclusion":["曾接受前列腺癌全身治療（≤12 週前開始之 ADT 除外）","顯著心血管疾病或嚴重共病"],"outcome":["**Primary Endpoint：OS**","Arm C 結果（M1 族群）：OS 60 vs. 45 個月（**HR 0.76**；95% CI 0.62–0.92；p=0.005）","Arm G 結果（M1 族群）：Median OS Not Reached vs. 46 個月（3 年 OS 83% vs. 65%；**HR 0.63**；95% CI 0.52–0.76；p<0.001）"],"followup":"約 43 個月（Arm C）／約 40 個月（Arm G）","importance":["採創新 MAMS 多臂多階段平台設計，以大型獨立族群二次驗證 Docetaxel 的存活效益","證實 Abiraterone 不論腫瘤負擔高低均能大幅延長 OS，並對部分局部高風險（M0）病患亦具疾病控制效益"],"updates":["長期多臂比較確認 Docetaxel 與 Abiraterone 均具持久 OS 優勢，並促成後續針對低腫瘤負擔 M1 疾病原發腫瘤放療之測試（Arm H）"]},{"cat":"mCSPC","name":"ENZAMET (ANZUP 1304)","year":"2019 / 2023","status":"positive","regimenShort":"ADT + Enzalutamide (±早期 Docetaxel)","phase":"Phase 3","arms":["實驗組：ADT + Enzalutamide（可併早期 Docetaxel）","對照組：ADT + 標準第一代抗雄性素藥物（NSAA：bicalutamide／flutamide／nilutamide）（可併早期 Docetaxel）"],"regimen":["Enzalutamide 160 mg PO QD vs. 標準 NSAA 每日","早期 Docetaxel（75 mg/m² q3w × 6 個療程）可由醫師決定併用（約 45% 患者接受）"],"inclusion":["mHSPC/mCSPC 男性患者","ECOG PS 0–2"],"exclusion":["曾使用第二代抗雄性素藥物或 abiraterone","有癲癇病史或易誘發癲癇之疾患"],"outcome":["**Primary Endpoint：OS**","Primary Analysis（追蹤 34 mo）：3 年 OS 80% vs. 72%（**HR 0.67**；95% CI 0.52–0.86；p=0.002）","Final Analysis（追蹤 68 mo／5.7 年）：5 年 OS 67% vs. 57%；Median OS Not Reached vs. 5.3 年（**HR 0.70**；95% CI 0.58–0.84；p<0.0001）"],"followup":"68 個月／5.7 年（final analysis）","importance":["首個以傳統第一代抗雄性素藥物（NSAA）為對照組、並探討「早期化療背景下」加入 ARPI 效益的 3 期試驗","證實 Enzalutamide 能顯著延長 mCSPC 患者 OS，且淨獲益在「未接受 Docetaxel」族群中最顯著"],"updates":["Final OS analysis 發表於 Lancet Oncology（2023），68 個月追蹤確認 Enzalutamide 具持久 OS 獲益，尤其於 low-volume 或未併用 docetaxel 患者"]},{"cat":"mCSPC","name":"ARCHES","year":"2019 / 2022","status":"positive","regimenShort":"ADT + Enzalutamide","phase":"Phase 3","arms":["實驗組：ADT + Enzalutamide","對照組：ADT + Placebo"],"regimen":["Enzalutamide 160 mg PO QD + ADT","Placebo：對應安慰劑 + ADT","允許先前接受 Docetaxel（至多 6 個療程，約占總人群 18%）"],"inclusion":["病理確診 mCSPC（不分高/低腫瘤負擔、可有或無先前 docetaxel）","ECOG PS 0–1"],"exclusion":["先前 ADT 治療中疾病惡化","ADT 開始前曾用 ARPI 或化療（允許之 docetaxel 除外）","癲癇病史"],"outcome":["**Primary Endpoint：rPFS**","rPFS：Median Not Reached vs. 19.0 個月（**HR 0.39**；95% CI 0.30–0.50；p<0.001）","Final OS（追蹤 44.6 mo）：Median OS Not Reached vs. Not Reached（**HR 0.66**；95% CI 0.53–0.81；p<0.001）"],"followup":"44.6 個月（final analysis）","importance":["確立 Enzalutamide + ADT 在廣泛 mCSPC 患者群（不分腫瘤負擔高低、無論先前是否接受化療）中，可降低 61% 影像進展風險與 34% 死亡風險","促成 Enzalutamide 全球擴展獲得 mCSPC 適應症批准"],"updates":["2022 JCO final analysis 顯示統計顯著 OS 獲益（HR 0.66），儘管有高達 31.3% 安慰劑組轉換至 enzalutamide"]},{"cat":"mCSPC","name":"TITAN","year":"2019 / 2021","status":"positive","regimenShort":"ADT + Apalutamide","phase":"Phase 3","arms":["實驗組：ADT + Apalutamide","對照組：ADT + Placebo"],"regimen":["Apalutamide 240 mg PO QD + ADT","Placebo：對應安慰劑 + ADT","允許先前接受 Docetaxel（≤6 個療程，約 11% 曾接受）"],"inclusion":["mCSPC 男性，不限疾病範圍（高或低腫瘤負擔）","ECOG PS 0–1"],"exclusion":["嚴重心臟功能不全","活動性腦轉移","癲癇病史或易誘發癲癇因子"],"outcome":["**Co-Primary Endpoints：OS 與 rPFS**","Primary Analysis（追蹤 22.7 mo）：2 年 OS 82.4% vs. 73.5%（**HR 0.67**；95% CI 0.51–0.89；p=0.005）；rPFS Not Reached vs. 22.1 個月（**HR 0.48**；95% CI 0.39–0.60；p<0.001）","Final OS Analysis（追蹤 44.0 mo）：Median OS Not Reached vs. 52.2 個月（**HR 0.65**；95% CI 0.53–0.79；p<0.0001）"],"followup":"44.0 個月（final analysis）","importance":["證明新世代 ARPI Apalutamide（Erleada）聯合 ADT 能廣泛降低全體 mCSPC 患者（含高/低腫瘤負擔及先前化療者）35% 死亡風險","確立 Apalutamide 於 mCSPC 的標準治療地位，並展現優異的生活品質（QoL）維持效益"],"updates":["Final OS analysis（JCO 2021）確認解盲及交叉調整後仍具持續 OS 獲益（adjusted HR 0.52），且因不良事件停藥比率低"]},{"cat":"mCSPC","name":"PEACE-1","year":"2021 / 2022","status":"positive","regimenShort":"ADT + Docetaxel + Abiraterone（三聯療法）","phase":"Phase 3（2×2 factorial design）","arms":["共 4 個治療組：SOC（ADT alone 或 ADT + Docetaxel）／SOC + Abiraterone／SOC + RT／SOC + Abiraterone + RT","關鍵比較：三聯（ADT + Docetaxel + Abiraterone）vs. 雙聯（ADT + Docetaxel）"],"regimen":["Abiraterone 1000 mg PO QD + Prednisone 5 mg PO QD","Docetaxel 75 mg/m² IV q3w × 6 個療程 + ADT"],"inclusion":["De novo 轉移性去勢敏感前列腺癌（mCSPC）","ECOG PS 0–2"],"exclusion":["曾接受前列腺癌全身治療（ADT ≤3 個月前開始者允許）","嚴重肝或心臟功能損傷"],"outcome":["**Co-Primary Endpoints：rPFS 與 OS**","結果（ADT+Docetaxel 族群，追蹤 4.4 年／52.8 mo）：","　rPFS：4.5 vs. 2.0 年（**HR 0.50**；95% CI 0.40–0.62；p<0.0001）","　OS：5.7 vs. 4.7 年（**HR 0.75**；95% CI 0.59–0.95；p=0.017）","High-volume 亞群 OS：5.1 vs. 3.5 年（HR 0.72；95% CI 0.55–0.95）"],"followup":"4.4 年／52.8 個月","importance":["首個開創「三聯療法（Triplet Therapy：ADT + Docetaxel + Abiraterone）」概念的大型 3 期試驗","證實 de novo 高腫瘤負擔（High-volume）mCSPC 患者中，三聯療法較雙聯（ADT + Docetaxel）能進一步顯著延長 1.6 年 OS，確立高風險/高負擔病患三聯強化治療標準"],"updates":["後續分析確認 ADT + Docetaxel 加上 Abiraterone 可顯著降低去勢抗性發生率，且未增加不可控之嚴重毒性"]},{"cat":"mCSPC","name":"ARASENS","year":"2022","status":"positive","regimenShort":"ADT + Docetaxel + Darolutamide（三聯療法）","phase":"Phase 3","arms":["實驗組：ADT + Docetaxel + Darolutamide","對照組：ADT + Docetaxel + Placebo"],"regimen":["Darolutamide 600 mg PO BID（隨餐服用）+ ADT","Docetaxel 75 mg/m² IV q3w × 6 個療程，於 darolutamide/placebo 開始後 6 週內起始"],"inclusion":["新診斷 mCSPC，適合接受 docetaxel 化療","ECOG PS 0–1"],"exclusion":["隨機分派前曾接受 ADT >12 週","曾用第二代 ARPI 或前列腺癌化療","嚴重肝功能損傷或活動性心臟病"],"outcome":["**Primary Endpoint：OS**","結果（追蹤 43.7 mo）：Median OS Not Reached vs. 48.9 個月（**HR 0.68**；95% CI 0.57–0.80；p<0.001），死亡風險降低 32.5%"],"followup":"43.7 個月","importance":["確立 Darolutamide（Nubeqa）結合 ADT 及 Docetaxel 之三聯療法在適合化療之 mCSPC 患者中的關鍵地位","展現優異存活獲益與極佳安全性——因結構特殊不易穿透中樞神經，副作用顯著低於傳統 ARPI，主要不良反應僅來自化療本身"],"updates":["2023 亞組分析（ASCO GU／JCO）顯示高、低腫瘤負擔及高、低風險族群均具一致 OS 獲益"]},{"cat":"mCSPC","name":"TALAPRO-3","year":"2026","status":"positive","regimenShort":"ADT + Enzalutamide + Talazoparib（HRR+）","phase":"Phase 3","arms":["實驗組：ADT + Enzalutamide + Talazoparib","對照組：ADT + Enzalutamide + Placebo"],"regimen":["Talazoparib 0.5 mg PO QD（中度腎功能不全者 0.35 mg QD）","Enzalutamide 160 mg PO QD + ADT"],"inclusion":["帶有前瞻性檢出之 HRR 基因變異（如 BRCA1、BRCA2、ATM、PALB2、CDK12 等）之 mCSPC 男性","ECOG PS 0–1"],"exclusion":["mCSPC 階段曾用 docetaxel，或曾接觸 ARPI","曾接受 PARP 抑制劑治療"],"outcome":["**Primary Endpoint：rPFS**","結果（追蹤約 37.6 mo）：Median rPFS Not Reached vs. 45.8 個月（**HR 0.481**；95% CI 0.357–0.647；p<0.0001），進展/死亡風險降低逾 50%","BRCA-mutated 亞群：**HR 0.37**（風險降低 63%）"],"followup":"約 37.6 個月","importance":["首個在攜帶 HRR 基因突變（如 BRCA1/2 等）之 mCSPC 患者中，證實 PARP 抑制劑（Talazoparib）加上 ARPI（Enzalutamide）雙重標靶強化能帶來重大疾病進展控制效益的 3 期試驗","正式將精準基因檢測時間點推前至 mCSPC 第一線治療，帶領前列腺癌治療邁入個體化精準醫療時代"],"updates":["ASCO 2026／NEJM 公布數據確認 HRR 突變亞群 rPFS 具統計顯著且臨床意義之改善，並呈現朝 OS 獲益之鼓舞趨勢"]},{"cat":"nmCRPC","name":"SPARTAN","year":"2018 / 2021","status":"positive","regimenShort":"ADT + Apalutamide","phase":"Phase 3","arms":["實驗組：Apalutamide + ADT（n=806）","對照組：Placebo + ADT（n=401）","隨機分配比例 2:1"],"regimen":["Apalutamide 240 mg PO QD（4 × 60 mg 錠劑）","ADT：治療期間持續使用（LHRH 促進劑/拮抗劑或先前雙側睪丸切除）","連續每日給藥，直至治療失敗、無法控制之毒性或出現遠端轉移"],"inclusion":["組織學或細胞學確診之前列腺腺癌","傳統影像（CT/MRI 及骨骼掃描）確認無遠端轉移之 nmCRPC","高轉移風險：連續 ADT 期間 PSA 倍增時間（PSADT）≤10 個月","血清睪固酮 <50 ng/dL（1.72 nmol/L）","篩選時 PSA >2.0 ng/mL","ECOG PS 0–1"],"exclusion":["存在遠端轉移，或主動脈分叉下骨盆淋巴結腫大 ≥2 cm","癲癇病史或易誘發癲癇之疾患（如中風、腦傷）","曾用第二代抗雄性素藥物（enzalutamide、apalutamide、darolutamide、abiraterone）或前列腺癌全身化療","未控制之心血管疾病"],"outcome":["**Primary Endpoint：Metastasis-Free Survival (MFS)**（隨機分派至獨立影像判讀首次發現骨或軟組織遠端轉移，或任何原因死亡）","Primary Analysis（追蹤 20.3 mo）：MFS 40.5 vs. 16.2 個月；**HR 0.28**（95% CI 0.23–0.35；p<0.001），轉移或死亡風險降低 72%","次要終點：症狀性惡化時間顯著延長（HR 0.45；p<0.001）；PFS2 顯著改善（HR 0.49；p<0.001）"],"followup":"Primary MFS：20.3 個月；Final OS：52.0 個月","importance":["首個發表證實新世代 AR 抑制劑結合 ADT 能顯著延緩高風險 nmCRPC 病患遠端轉移與死亡的大型 3 期試驗，促成 Apalutamide（Erleada）獲 FDA 快速批准","確立「無遠端轉移生存期（MFS）」作為 nmCRPC 臨床試驗及法規審查的有效替代終點","最終分析證明早期介入能帶來超越轉移後之整體存活效益"],"updates":["Final OS Analysis（Annals of Oncology, 2021；追蹤 52 mo）：OS 73.9 vs. 59.9 個月（**HR 0.78**；95% CI 0.64–0.96；p=0.0161），儘管有 19% 安慰劑組交叉使用及對照組高比例後續延命治療","安全性與先前報告一致（主要不良事件：疲倦、皮疹、骨折、甲狀腺低能症；癲癇發生率 0.2%）"]},{"cat":"nmCRPC","name":"PROSPER","year":"2018 / 2020","status":"positive","regimenShort":"ADT + Enzalutamide","phase":"Phase 3","arms":["實驗組：Enzalutamide + ADT（n=933）","對照組：Placebo + ADT（n=468）","隨機分配比例 2:1"],"regimen":["Enzalutamide 160 mg PO QD（4 × 40 mg 膠囊/錠劑）","ADT：治療期間持續使用","每日口服，直至影像學疾病惡化、無法接受之毒性或開始新的全身抗腫瘤治療"],"inclusion":["組織學或細胞學確診之前列腺癌","獨立影像判讀確認無遠端轉移之 nmCRPC（骨骼掃描或 CT/MRI 均無遠端轉移證據）","高轉移風險：PSADT ≤10 個月","基線 PSA ≥2.0 ng/mL 且血清睪固酮 <50 ng/dL","ECOG PS 0–1"],"exclusion":["癲癇病史或潛在易誘發癲癇之疾患","曾接受化療、第二代抗雄性素藥物或 abiraterone 治療前列腺癌","過去 6 個月內嚴重心血管疾病"],"outcome":["**Primary Endpoint：MFS**","Primary Analysis（追蹤 18.5 mo）：MFS 36.6 vs. 14.7 個月；**HR 0.29**（95% CI 0.24–0.35；p<0.001），轉移或死亡風險降低 71%","次要終點：PSA 惡化時間 37.2 vs. 3.9 個月（HR 0.07；p<0.001）；首次使用後續抗腫瘤治療時間 39.6 vs. 17.7 個月（HR 0.21；p<0.001）"],"followup":"Primary MFS：18.5 個月；Final OS：48.0 個月","importance":["成功將 Enzalutamide（Xtandi）使用時機由 mCRPC 前移至 nmCRPC 階段，顯著延長高風險病患無遠端轉移時間","證實早期延緩轉移能轉換為長期存活獲益——最終分析證實顯著延長 OS，降低 27% 死亡風險"],"updates":["Final OS Analysis（NEJM, 2020；追蹤 48 mo）：OS 67.0 vs. 56.3 個月（**HR 0.73**；95% CI 0.61–0.89；p=0.001）","關注不良事件：疲倦、高血壓、心血管事件及跌倒；enzalutamide 組癲癇發生率 0.5%"]},{"cat":"nmCRPC","name":"ARAMIS","year":"2019 / 2020","status":"positive","regimenShort":"ADT + Darolutamide","phase":"Phase 3","arms":["實驗組：Darolutamide + ADT（n=955）","對照組：Placebo + ADT（n=554）","隨機分配比例 2:1"],"regimen":["Darolutamide 600 mg PO BID（2 × 300 mg 錠劑，每日兩次隨餐服用）","ADT：治療期間持續使用","連續給藥，直至影像學惡化、無法接受之毒性或退出試驗"],"inclusion":["確認無遠端轉移之 nmCRPC（胸/腹/骨盆 CT/MRI 及全身放射性核素骨骼掃描皆陰性）","高轉移風險：PSADT ≤10 個月","基線 PSA ≥2.0 ng/mL 且血清睪固酮 <50 ng/dL","ECOG PS 0–1"],"exclusion":["存在遠端轉移，或淋巴結轉移短軸 >2 cm","曾接受第二代 AR 拮抗劑或 PARP 抑制劑治療","註：與 SPARTAN、PROSPER 不同，除非嚴重/未受控，癲癇或心臟病史患者並未自動排除"],"outcome":["**Primary Endpoint：MFS**","Primary Analysis（追蹤 17.9 mo）：MFS 40.4 vs. 18.4 個月；**HR 0.41**（95% CI 0.34–0.50；p<0.001），轉移或死亡風險降低 59%","次要終點：疼痛惡化時間顯著延遲（HR 0.65；p<0.001）；首次細胞毒性化療時間顯著延遲（HR 0.43；p<0.001）；首次症狀性骨骼事件（SSE）時間 HR 0.43（p=0.01）"],"followup":"Primary MFS：17.9 個月；Final OS：29.0 個月","importance":["展現極佳安全性與極低中樞神經毒性——Darolutamide（Nubeqa）具獨特化學結構，不易穿透血腦障壁，中樞神經相關副作用（疲倦、跌倒、認知障礙、癲癇）發生率與安慰劑幾乎無異","成功確立 Darolutamide 於 nmCRPC 第一線標準治療地位，同時證實顯著 OS 獲益"],"updates":["Final OS Analysis（NEJM, 2020；追蹤 29.0 mo）：3 年 OS 83%（Darolutamide）vs. 77%（Placebo）；死亡 HR 0.69（95% CI 0.53–0.88；p=0.003），死亡風險降低 31%","不良事件（疲倦、跌倒、高血壓、癲癇）發生率在 Darolutamide 與 Placebo 組間幾乎相同"]},{"cat":"mCRPC","name":"TROPIC","year":"2010","status":"positive","regimenShort":"Cabazitaxel + Prednisone（post-docetaxel）","phase":"Phase 3","arms":["實驗組：Cabazitaxel + Prednisone（n=378）","對照組：Mitoxantrone + Prednisone（n=377）"],"regimen":["Cabazitaxel 25 mg/m² IV，每 3 週一次（最多 10 個療程）","Mitoxantrone 10 mg/m² IV，每 3 週一次（最多 10 個療程）","兩組均併用 Prednisone 10 mg PO QD"],"inclusion":["組織學確診之 mCRPC，於含 docetaxel 療程中或之後疾病惡化","ECOG PS 0–2","血液、腎、肝功能適當"],"exclusion":["曾接受 mitoxantrone 治療","≥Grade 2 周邊神經病變","未控制之疾病或活動性心臟病"],"outcome":["**Primary Endpoint：OS**","OS：15.1 vs. 12.7 個月（**HR 0.70**；95% CI 0.59–0.83；p<0.0001）","次要終點：PFS 2.8 vs. 1.4 個月（HR 0.74；p<0.0001）；PSA 反應率 39.2% vs. 17.8%（p<0.0001），均顯著有利於 Cabazitaxel"],"followup":"12.8 個月","importance":["第一個證實化療（docetaxel）失敗後之 mCRPC 患者使用新型半合成紫杉醇 Cabazitaxel 能顯著延長 OS 的 3 期試驗","奠定 Cabazitaxel 在後線化療的標準地位，並引發劑量優化延伸研究"],"updates":["長期安全性及療效分析確認持續之 OS 獲益","PROSELICA 試驗（2017）證實 Cabazitaxel 20 mg/m² 於 OS 上不劣於 25 mg/m²，且嚴重嗜中性白血球低下與毒性顯著較低"]},{"cat":"mCRPC","name":"COU-AA-301","year":"2011 / 2012","status":"positive","regimenShort":"Abiraterone + Prednisone（post-docetaxel）","phase":"Phase 3","arms":["實驗組：Abiraterone Acetate + Prednisone（n=797）","對照組：Placebo + Prednisone（n=398）","隨機分配比例 2:1"],"regimen":["Abiraterone Acetate 1000 mg PO QD（4 × 250 mg 錠劑，空腹服用）","Prednisone 5 mg PO BID（兩組皆用）","連續 28 天週期，直至疾病惡化或無法接受之毒性"],"inclusion":["mCRPC 於 1–2 種化療（至少一種含 docetaxel）期間或之後有文件記載之惡化（PSA 或影像）","血清睪固酮 <50 ng/dL","ECOG PS ≤2"],"exclusion":["曾用 ketoconazole 治療前列腺癌 >7 天","嚴重心臟功能不全或未控制之高血壓/低血鉀","活動性中樞神經系統轉移（內臟器官轉移初期為可納入）"],"outcome":["**Primary Endpoint：OS**","Interim Analysis：OS 14.8 vs. 10.9 個月（**HR 0.65**；95% CI 0.54–0.77；p<0.001）","Final Analysis：OS 15.8 vs. 11.2 個月（**HR 0.74**；95% CI 0.64–0.86；p<0.0001）"],"followup":"Primary：12.8 個月；Final：20.2 個月","importance":["雄性素生物合成抑制劑的重大突破——證實即使化療失敗後，CRPC 仍高度依賴體內（含腫瘤微環境內）雄性素合成，打通 CYP17 抑制劑 Abiraterone（Zytiga）之上市之路","開啟 mCRPC 新世代內分泌治療（ARTA）新紀元"],"updates":["Final OS analysis 發表於 Lancet Oncology（2012），確認所有亞群（含高齡患者及內臟轉移者）均具一致存活獲益"]},{"cat":"mCRPC","name":"COU-AA-302","year":"2013 / 2015","status":"positive","regimenShort":"Abiraterone + Prednisone（chemo-naive）","phase":"Phase 3","arms":["實驗組：Abiraterone Acetate + Prednisone（n=542）","對照組：Placebo + Prednisone（n=546）"],"regimen":["Abiraterone Acetate 1000 mg PO QD","Prednisone 5 mg PO BID（兩組皆用）","連續 28 天週期"],"inclusion":["無症狀或輕微症狀之 mCRPC（無因前列腺癌疼痛使用鴉片類藥物）","化療未曾使用（未曾用 docetaxel 或其他全身化療）","血清睪固酮 <50 ng/dL 且 ECOG PS 0–1"],"exclusion":["內臟轉移（如肝或肺轉移；僅淋巴結或骨轉移可納入）","中重度疼痛或需規律使用鴉片類藥物"],"outcome":["**Co-Primary Endpoints：rPFS 與 OS**","rPFS：16.5 vs. 8.3 個月（**HR 0.53**；95% CI 0.45–0.62；p<0.001）","Final OS（追蹤 49.2 mo）：34.7 vs. 30.3 個月（**HR 0.81**；95% CI 0.70–0.93；p=0.0033）"],"followup":"49.2 個月（final analysis）","importance":["前移 ARTA 至第一線——成功將 Abiraterone 適應症延伸至「未接受化療」之無症狀/輕微症狀 mCRPC 患者","證明無症狀階段早期使用 AR 軸阻斷劑能顯著延緩病情惡化、化療使用時間及疼痛發生，改變全球 mCRPC 一線治療指引"],"updates":["Final OS analysis（Lancet Oncol 2015）確認統計顯著 OS 改善，儘管對照組有 44% 交叉使用至 abiraterone"]},{"cat":"mCRPC","name":"AFFIRM","year":"2012","status":"positive","regimenShort":"Enzalutamide（post-docetaxel）","phase":"Phase 3","arms":["實驗組：Enzalutamide（n=800）","對照組：Placebo（n=399）","隨機分配比例 2:1"],"regimen":["Enzalutamide 160 mg PO QD（4 × 40 mg 膠囊）","Placebo：對應每日口服膠囊","連續每日給藥直至惡化或無法接受之毒性；類固醇非強制使用"],"inclusion":["1 或 2 種化療（至少一種含 docetaxel）後惡化之 mCRPC","血清睪固酮 <50 ng/dL","ECOG PS 0–2"],"exclusion":["癲癇病史、腦轉移或易誘發癲癇之疾患","未控制之心血管疾病"],"outcome":["**Primary Endpoint：OS**","OS：18.4 vs. 13.6 個月（**HR 0.63**；95% CI 0.53–0.75；p<0.001）","次要終點：PSA 反應率 54% vs. 1.5%（p<0.001）；軟組織反應率 29% vs. 4%（p<0.001）；PSA 惡化時間 8.3 vs. 3.0 個月（p<0.001），均有利於 Enzalutamide"],"followup":"14.4 個月","importance":["新一代 AR 拮抗劑的重大突破——證實強效口服 AR 抑制劑 Enzalutamide（Xtandi）於化療後 mCRPC 能降低 37% 死亡風險","不需強制合併類固醇，提供病患便利且強效的口服標靶治療選項"],"updates":["癲癇發生率低（enzalutamide 組 0.6%）","生活品質（QoL）評估顯示健康相關生活品質及功能狀態均顯著改善"]},{"cat":"mCRPC","name":"PREVAIL","year":"2014","status":"positive","regimenShort":"Enzalutamide（chemo-naive）","phase":"Phase 3","arms":["實驗組：Enzalutamide（n=872）","對照組：Placebo（n=845）","隨機分配比例 1:1"],"regimen":["Enzalutamide 160 mg PO QD","Placebo：對應每日口服劑量","持續至疾病惡化或開始化療/試驗用藥"],"inclusion":["無症狀或輕微症狀之 mCRPC","化療未曾使用","ECOG PS 0","血清睪固酮 <50 ng/dL"],"exclusion":["癲癇病史或潛在癲癇風險","中重度癌痛需慢性鴉片類藥物治療","肝臟內臟轉移（肺轉移可納入）"],"outcome":["**Co-Primary Endpoints：rPFS 與 OS**","rPFS：Median Not Reached vs. 3.9 個月（**HR 0.19**；95% CI 0.15–0.23；p<0.001），風險降低 81%","OS：32.4 vs. 30.2 個月（**HR 0.77**；95% CI 0.67–0.88；p=0.0002）"],"followup":"22.0 個月","importance":["確立 Enzalutamide 於第一線未化療 mCRPC 的標準治療地位，展現極優異之 rPFS 獲益（HR 0.19）與顯著存活延長","大幅延緩開始化療的時間（中位化療時間 28.0 vs. 10.8 個月；HR 0.35）"],"updates":["更新分析（European Urology 2017）延長追蹤後確認長期療效與各預設亞群（含高齡患者）之存活優勢"]},{"cat":"mCRPC","name":"ALSYMPCA","year":"2013","status":"positive","regimenShort":"Radium-223 + BSOC（骨轉移）","phase":"Phase 3","arms":["實驗組：Radium-223 dichloride + Best Standard of Care（n=614）","對照組：Placebo + Best Standard of Care（n=307）","隨機分配比例 2:1"],"regimen":["Radium-223：50 kBq/kg IV 輸注，每 4 週一次，最多 6 個療程（後續標準修訂為 55 kBq/kg）","Best Standard of Care：局部放療、糖皮質激素、抗雄性素藥物、ketoconazole 等（Abiraterone/Enzalutamide 不可併用）"],"inclusion":["症狀性 CRPC，骨骼掃描顯示 ≥2 處骨轉移","無已知內臟轉移（淋巴結轉移 <3 cm 可納入）","曾接受 docetaxel、不適合 docetaxel 或拒絕 docetaxel 之患者"],"exclusion":["內臟轉移（肝、肺、腦等）","惡性淋巴結腫大短軸 >3 cm","血友病或嚴重血球低下病史"],"outcome":["**Primary Endpoint：OS**","OS：14.9 vs. 11.3 個月（**HR 0.70**；95% CI 0.58–0.83；p<0.001）","次要終點：首次症狀性骨骼事件（SSE）時間顯著延長（15.6 vs. 9.8 個月；HR 0.66；p<0.001）"],"followup":"10.4 個月","importance":["首創 Alpha 粒子放射性同位素標靶治療——第一個證實骨轉移專一性 Alpha 靶向藥物（Radium-223, Xofigo）能延長 mCRPC OS 的臨床試驗","同時顯著降低病理性骨折、脊髓壓迫等骨骼相關事件（SSE），提供僅有骨轉移病患的重要治療選項"],"updates":["⚠️ 安全性警示（ERA-223 試驗）：後續研究顯示 Radium-223 併用 Abiraterone + Prednisone 骨折風險增加；目前 Radium-223 與 Abiraterone 直接併用為禁忌"]},{"cat":"mCRPC","name":"CARD","year":"2019","status":"positive","regimenShort":"Cabazitaxel vs. 換用另一 ARTA","phase":"Phase 3","arms":["實驗組：Cabazitaxel + Prednisone（n=129）","對照組：換用另一種 AR 標靶藥物（Enzalutamide 或 Abiraterone）（n=126）","隨機分配比例 1:1"],"regimen":["Cabazitaxel 25 mg/m² IV，每 3 週一次 + Prednisone 10 mg 每日 + G-CSF 預防性使用","Abiraterone 1000 mg QD + Prednisone 5 mg BID，或 Enzalutamide 160 mg QD"],"inclusion":["mCRPC 曾接受 Docetaxel，且在先前一種第二代 ARTA（Abiraterone 或 Enzalutamide，docetaxel 前或後使用）治療 12 個月內惡化","ECOG PS 0–2"],"exclusion":["曾接受 cabazitaxel，或曾用過 abiraterone 與 enzalutamide 兩者","紫杉醇化療或類固醇之禁忌症"],"outcome":["**Primary Endpoint：rPFS**","rPFS：8.0 vs. 3.7 個月（**HR 0.54**；95% CI 0.40–0.73；p<0.001）","關鍵次要終點（OS）：13.6 vs. 11.0 個月（**HR 0.64**；95% CI 0.46–0.89；p=0.008）"],"followup":"9.2 個月","importance":["破解三線治療決策難題（ARTA-to-ARTA 交叉耐藥性）——明確證實在 Docetaxel 及一種 ARTA 均失效且 12 個月內快速惡化後，換用「第二種 ARTA」效果差；改用化療 Cabazitaxel 於 rPFS 及 OS 皆顯著勝出","定義後線 mCRPC 最佳治療順序（Sequencing）"],"updates":["病人自述結果（PROs）確認 Cabazitaxel 相較於改用另一種 ARTA，具更優異之疼痛反應及生活品質保存"]},{"cat":"mCRPC","name":"PROfound","year":"2020","status":"positive","regimenShort":"Olaparib（post-ARTA + HRR mut.）","phase":"Phase 3","arms":["實驗組：Olaparib（n=256，Cohort A n=162／Cohort B n=94）","對照組：醫師選擇（Abiraterone 或 Enzalutamide）（n=131）","隨機分配比例 2:1"],"regimen":["Olaparib 300 mg PO BID（2 × 150 mg 錠劑，每日兩次）","對照組：Enzalutamide 160 mg QD 或 Abiraterone 1000 mg QD + Prednisone 5 mg BID"],"inclusion":["先前 ARTA（Abiraterone 或 Enzalutamide）治療後惡化之 mCRPC","允許先前紫杉醇化療（65% 曾接受 docetaxel）","具 HRR 基因變異：Cohort A = BRCA1、BRCA2 或 ATM；Cohort B = 其他 12 種 HRR 基因（BARD1、BRIP1、CDK12、CHEK1、CHEK2、FANCL、PALB2、PPP2R2A、RAD51B/C/D、RAD54L）"],"exclusion":["曾接受 PARP 抑制劑治療","未控制之中樞神經系統轉移或活動性次發惡性腫瘤"],"outcome":["**Primary Endpoint：Cohort A（BRCA1/2、ATM）rPFS**","Primary Results（Cohort A）：7.4 vs. 3.6 個月（**HR 0.34**；95% CI 0.25–0.47；p<0.001）","Cohort A OS：19.1 vs. 14.7 個月（**HR 0.69**；95% CI 0.50–0.97；p=0.02），儘管有 67% 對照組交叉使用至 olaparib"],"followup":"Cohort A：21.9 個月；整體人群：21.0 個月","importance":["開啟前列腺癌精準醫療與 Biomarker 導向時代——第一個證實 PARP 抑制劑（Olaparib, Lynparza）能改善特定 HRR 基因突變（尤其是 BRCA1/2）mCRPC 患者生存的 3 期試驗","奠定基因檢測於晚期前列腺癌之標準診斷流程"],"updates":["Final OS analysis（NEJM 2020）顯示 Cohort A 於調整交叉使用後仍具顯著存活獲益（adjusted HR 約 0.42）"]},{"cat":"mCRPC","name":"VISION","year":"2021","status":"positive","regimenShort":"177Lu-PSMA-617 + SOC（PSMA+）","phase":"Phase 3","arms":["實驗組：177Lu-PSMA-617 + Standard of Care（n=551）","對照組：Standard of Care alone（n=280）","隨機分配比例 2:1"],"regimen":["177Lu-PSMA-617 7.4 GBq（200 mCi）IV 輸注，每 6 週一次，最多 6 個療程","SOC：排除細胞毒性化療、radium-223 或試驗用藥；允許 ARTA、類固醇、放療等"],"inclusion":["68Ga-PSMA-11 PET/CT 確認 PSMA 陽性 mCRPC（所有病灶高度吸收，無非表現 PSMA 之病灶）","先前至少接受一種 ARTA（Abiraterone 或 Enzalutamide）及 1–2 種紫杉醇化療","ECOG PS 0–2"],"exclusion":["PET/CT 顯示 PSMA 陰性或不一致病灶（如 FDG 陽性/PSMA 陰性）","血清肌酸酐 >1.5× ULN 或骨髓功能嚴重受損"],"outcome":["**Co-Primary Endpoints：rPFS 與 OS**","rPFS：8.7 vs. 3.4 個月（**HR 0.40**；99.2% CI 0.29–0.57；p<0.001）","OS：15.3 vs. 11.3 個月（**HR 0.62**；95% CI 0.52–0.74；p<0.001）"],"followup":"20.9 個月","importance":["標靶放射配體療法（RLT）與 PSMA Theranostics 的里程碑——成功引領 177Lu-PSMA-617（Pluvicto）獲全球批准，建立「分子影像診斷（PET）+ 放射治療（RLT）」診療合一模式","革命性增添後線重度前列腺癌治療武器"],"updates":["亞組分析顯示無論基線 PSA、疼痛評分或 LDH 水平，療效均一致","主要毒性：口乾（xerostomia 38.8%）、疲倦、噁心及骨髓抑制"]},{"cat":"mCRPC","name":"TheraP","year":"2021 / 2022","status":"positive","regimenShort":"177Lu-PSMA-617 vs. Cabazitaxel（PSMA+）","phase":"Phase 2（隨機、開放性標籤）","arms":["實驗組：177Lu-PSMA-617（n=99）","主動對照組：Cabazitaxel（n=101）","隨機分配比例 1:1"],"regimen":["177Lu-PSMA-617：起始 8.5 GBq IV，每療程遞減 0.5 GBq，每 6 週一次，最多 6 個療程","Cabazitaxel 20 mg/m² IV，每 3 週一次，最多 10 個療程"],"inclusion":["docetaxel 後惡化之 mCRPC","68Ga-PSMA-11 PET/CT 高 PSMA 表現（SUVmax ≥20）且 18F-FDG PET/CT 無不一致病灶（雙 PET 篩選）","ECOG PS 0–2"],"exclusion":["存在 FDG 陽性／PSMA 陰性轉移病灶（不一致疾病）","曾接受 Cabazitaxel 或放射性藥物治療"],"outcome":["**Primary Endpoint：PSA 反應率（≥50% 下降）**","PSA 反應率：66%（177Lu-PSMA-617）vs. 37%（Cabazitaxel）（差異 29%；95% CI 16–42%；p<0.0001）","關鍵次要終點：rPFS 有利於 177Lu-PSMA-617（HR 0.63；p=0.0028）；Grade 3–4 不良事件 33%（Lu-PSMA）vs. 53%（Cabazitaxel）"],"followup":"35.7 個月（Final OS Analysis）","importance":["首個 Head-to-Head 比較 RLT 與現行標準化療（Cabazitaxel）的臨床試驗——證實 177Lu-PSMA-617 具更優異的 PSA 腫瘤反應率與更佳安全性/生活品質","建立「FDG/PSMA 雙 PET/CT 掃描」篩選最適治療病患群之精準診斷標準"],"updates":["Final OS analysis（Lancet Oncol 2022）：兩組 OS 相近（19.1 vs. 19.6 個月；HR 0.97；p=0.82），因高交叉使用比例及嚴格雙 PET 篩選族群而屬預期結果"]},{"cat":"mCRPC","name":"PSMAfore","year":"2023 / 2024","status":"positive","regimenShort":"177Lu-PSMA-617 vs. ARTA 換用（chemo-naive）","phase":"Phase 3","arms":["實驗組：177Lu-PSMA-617（n=234）","對照組：換用另一 ARTA（Abiraterone 或 Enzalutamide）（n=234）","隨機分配比例 1:1"],"regimen":["177Lu-PSMA-617 7.4 GBq（200 mCi）IV，每 6 週一次，最多 6 個療程","ARTA 換用：由先前 abiraterone 換為 enzalutamide，或反之"],"inclusion":["68Ga-PSMA-11 PET/CT 確認 PSMA 陽性 mCRPC","先前一種 ARTA 治療後疾病惡化","mCRPC 階段未曾接受紫杉醇化療（若 (m)HSPC 階段曾用 docetaxel，須完成逾 12 個月）","適合換用 ARTA 之候選患者"],"exclusion":["mCRPC 階段曾接受化療","PET 影像顯示不一致、無 PSMA 表現之病灶","曾接受 PARP 抑制劑或放射性藥物治療"],"outcome":["**Primary Endpoint：rPFS**","結果：12.0 vs. 5.6 個月（**HR 0.43**；95% CI 0.33–0.54；p<0.0001），進展/死亡風險降低 57%","關鍵次要終點：PSA 反應率（≥50%）78% vs. 43%"],"followup":"24.1 個月","importance":["將 177Lu-PSMA-617（Pluvicto）治療順序大幅前移至化療前——證明 ARTA 失敗後、尚未化療之 mCRPC 患者中，177Lu-PSMA 療效遠優於傳統 ARTA 互相轉換","改變化療前 mCRPC 第二線治療策略格局"],"updates":["OS 數據因高交叉使用（84% 對照組於 rPFS 後交叉至 177Lu-PSMA-617）呈現未調整 HR 約 0.98；交叉調整後之 OS 分析顯示明確有利於 177Lu-PSMA 之 OS 獲益"]},{"cat":"mCRPC","name":"TALAPRO-2","year":"2023","status":"positive","regimenShort":"Talazoparib + Enzalutamide（1L mCRPC）","phase":"Phase 3","arms":["實驗組：Talazoparib + Enzalutamide（Cohort 1 n=402）","對照組：Placebo + Enzalutamide（Cohort 1 n=403）","隨機分配比例 1:1"],"regimen":["Talazoparib 0.5 mg PO QD（中度腎功能不全者降為 0.35 mg QD）","Enzalutamide 160 mg PO QD","Placebo：對應每日口服膠囊"],"inclusion":["無症狀或輕微症狀之第一線（1L）mCRPC","mCRPC 階段化療未曾使用且 ARTA 未曾使用","Cohort 1：未依 HRR 基因狀態篩選（All-comers）；Cohort 2：前瞻性篩選之 HRR 基因突變族群（BRCA1/2、ATM、CDK12 等）"],"exclusion":["曾接受 PARP 抑制劑、Enzalutamide、Abiraterone 或 mCRPC 化療治療","嚴重心臟或胃腸道疾患"],"outcome":["**Primary Endpoint：blinded independent central review 評估之 rPFS**","結果（All-comers Cohort 1）：Median rPFS Not Reached vs. 21.9 個月（**HR 0.63**；95% CI 0.51–0.78；p<0.001）","結果（HRR-mutated Cohort 2）：Median rPFS Not Reached vs. 13.8 個月（**HR 0.45**；95% CI 0.33–0.61；p<0.001）；BRCA-mutated 亞群 HR 0.20"],"followup":"24.9 個月（Cohort 1）","importance":["確立「PARP 抑制劑 + AR 阻斷劑」聯合雙標靶治療於 1L mCRPC 的協同效應——證實 Talazoparib（Talzenna）加上 Enzalutamide 能顯著延長第一線 mCRPC rPFS，尤其於 HRR/BRCA 突變患者呈現爆發性效益","促成 PARP 抑制劑首度進入 mCRPC 第一線合併療法"],"updates":["OS 數據尚未成熟但呈現有利於合併治療組之趨勢","安全性：貧血為最常見 Grade 3–4 不良事件（47%），以劇量調整及輸血管理，未致高比例治療中斷"]}];
+
+const CATS = [
+  {key:'nmCRPC', label:'nmCRPC', full:'非轉移性去勢抗性'},
+  {key:'mCSPC',  label:'mCSPC',  full:'轉移性去勢敏感性'},
+  {key:'mCRPC',  label:'mCRPC',  full:'轉移性去勢抗性'}
+];
+
+let state = { tab: 'nmCRPC', query: '', expanded: new Set() };
+
+function esc(s){
+  return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+}
+function md(s){
+  let e = esc(s);
+  e = e.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  return e;
+}
+function bulletBlock(title, icon, items, cls){
+  if(!items || !items.length) return '';
+  const lis = items.map(i => `<li>${md(i)}</li>`).join('');
+  return `<div class="blk ${cls}">
+    <div class="blk-title"><span>${icon}</span><span>${title}</span></div>
+    <ul>${lis}</ul>
+  </div>`;
+}
+
+function matchesQuery(t, q){
+  if(!q) return true;
+  const hay = [
+    t.name, t.regimenShort, t.phase,
+    ...(t.arms||[]), ...(t.regimen||[]), ...(t.inclusion||[]),
+    ...(t.exclusion||[]), ...(t.outcome||[]), t.followup,
+    ...(t.importance||[]), ...(t.updates||[])
+  ].join(' ').toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+
+function renderTabs(){
+  const wrap = document.getElementById('tabsInner');
+  wrap.innerHTML = CATS.map(c => {
+    const n = TRIALS.filter(t=>t.cat===c.key).length;
+    const active = (state.tab===c.key && !state.query) ? 'active' : '';
+    return `<button class="tab-btn ${active}" data-tab="${c.key}" type="button">
+      ${c.label}<span class="tcount">${n} trials</span>
+    </button>`;
+  }).join('');
+  wrap.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.tab = btn.dataset.tab;
+      const si = document.getElementById('searchInput');
+      si.value=''; state.query='';
+      updateClearBtn();
+      renderTabs();
+      renderContent();
+    });
+  });
+}
+
+function cardHTML(t, idx){
+  const id = 'trial-' + idx;
+  const isOpen = state.expanded.has(id);
+  const isPos = t.status === 'positive';
+  const showCat = !!state.query;
+  return `
+  <div class="card cat-${t.cat} ${isOpen?'expanded':''}" data-id="${id}">
+    <div class="card-head" data-toggle="${id}">
+      <div class="card-head-left">
+        <div class="trial-name">${showCat? `<span class="cat-chip ${t.cat}">${t.cat}</span>`:''}${esc(t.name)}</div>
+        <div class="trial-meta-row">
+          <span class="trial-year">${esc(t.year)}</span>
+          <span class="dot">•</span>
+          <span>${esc(t.phase)}</span>
+        </div>
+        <div class="trial-regimen">${esc(t.regimenShort)}</div>
+      </div>
+      <div class="status-badge">
+        <div class="status-icon ${isPos?'positive':'negative'}">${isPos?'✓':'✕'}</div>
+        <div class="status-text ${isPos?'positive':'negative'}">${isPos?'POSITIVE':'NEGATIVE'}</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      ${bulletBlock('Treatment Arms（含 Control）','👥', t.arms, 'neutral')}
+      ${bulletBlock('Regimen — 劑量／用法／Cycle','💊', t.regimen, 'neutral')}
+      ${bulletBlock('Inclusion Criteria','✅', t.inclusion, 'neutral')}
+      ${bulletBlock('Exclusion Criteria','🚫', t.exclusion, 'neutral')}
+      ${bulletBlock('Primary Outcome &amp; Results','🎯', t.outcome, 'outcome')}
+      <div class="blk followup">
+        <div class="blk-title"><span>⏱️</span><span>平均 Follow-up</span></div>
+        <div class="fu-value">${esc(t.followup)}</div>
+      </div>
+      ${bulletBlock('Trial 的重要性及影響','⭐', t.importance, 'importance')}
+      ${bulletBlock('重要更新／追蹤報告','📌', t.updates, 'updates')}
+    </div>
+  </div>`;
+}
+
+function renderContent(){
+  const main = document.getElementById('mainContent');
+  const hint = document.getElementById('searchHint');
+  let list;
+  let headerHTML = '';
+
+  if(state.query){
+    list = TRIALS.filter(t => matchesQuery(t, state.query));
+    hint.style.display = 'block';
+    hint.textContent = `已跨 nmCRPC／mCSPC／mCRPC 全部類別搜尋 "${state.query}"`;
+    headerHTML = `<div class="section-label">
+        <span class="stitle">搜尋結果</span>
+        <span class="scount">${list.length} 筆符合</span>
+      </div>`;
+  } else {
+    list = TRIALS.filter(t => t.cat === state.tab);
+    hint.style.display = 'none';
+    const catInfo = CATS.find(c=>c.key===state.tab);
+    headerHTML = `<div class="section-label">
+        <span class="stitle">${catInfo.label}　${catInfo.full}前列腺癌</span>
+        <span class="scount">${list.length} trials</span>
+      </div>`;
+  }
+
+  if(list.length === 0){
+    main.innerHTML = headerHTML + `<div class="no-results">
+      <div class="nr-icon">🔎</div>
+      <div class="nr-text">找不到符合的試驗，請嘗試其他關鍵字</div>
+    </div>`;
+    return;
+  }
+
+  main.innerHTML = headerHTML + list.map((t,i)=>cardHTML(t, TRIALS.indexOf(t))).join('');
+
+  main.querySelectorAll('[data-toggle]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.getAttribute('data-toggle');
+      const cardEl = el.closest('.card');
+      if(state.expanded.has(id)){
+        state.expanded.delete(id);
+        cardEl.classList.remove('expanded');
+      } else {
+        state.expanded.add(id);
+        cardEl.classList.add('expanded');
+      }
+    });
+  });
+}
+
+function updateClearBtn(){
+  const cb = document.getElementById('clearBtn');
+  cb.style.display = state.query ? 'flex' : 'none';
+}
+
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  state.query = e.target.value.trim();
+  updateClearBtn();
+  renderTabs();
+  renderContent();
+});
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  const si = document.getElementById('searchInput');
+  si.value=''; state.query='';
+  si.focus();
+  updateClearBtn();
+  renderTabs();
+  renderContent();
+});
+
+renderTabs();
+renderContent();
+</script>
+</body>
+</html>

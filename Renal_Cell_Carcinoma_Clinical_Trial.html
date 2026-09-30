@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Renal Cell Carcinoma Clinical Trial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;600;700;900&family=Noto+Sans+TC:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --nejm-red:#A6192E;
+    --nejm-red-dark:#7C1121;
+    --nejm-red-tint:#FBEAEC;
+    --ink:#1B1B1B;
+    --ink-soft:#4A4842;
+    --gray:#7A776E;
+    --gray-line:#DFDACB;
+    --paper:#FCFBF6;
+    --paper-card:#FFFFFF;
+    --paper-alt:#F4F1E7;
+    --green:#1E6B3C;
+    --green-tint:#E7F2EA;
+    --blue:#28507A;
+    --blue-tint:#EAF0F7;
+    --amber-tint:#FBF3E3;
+    --amber:#8A5A00;
+    --slate:#5A6B7A;
+    --slate-tint:#EAEDF0;
+
+    /* per-category colors (RCC treatment settings) */
+    --c-adjuvant: #2C4A6E;        /* deep slate blue */
+    --c-adjuvant-tint: #E7ECF3;
+    --c-mrcc1L:  #285C4D;         /* deep forest teal-green */
+    --c-mrcc1L-tint: #E6EFEC;
+    --c-mrccLater: #6E2743;       /* deep wine burgundy */
+    --c-mrccLater-tint: #F1E6EB;
+    --c-nccrcc: #5B3A6E;          /* deep plum purple */
+    --c-nccrcc-tint: #EEE8F1;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Noto Sans TC','Source Serif 4',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:48px;
+  }
+  a{color:inherit;}
+
+  .sticky-top{
+    position:sticky; top:0; z-index:50;
+    background:var(--paper);
+  }
+
+  header.masthead{
+    background:var(--paper-card);
+    border-bottom:3px solid var(--nejm-red);
+    padding:14px 16px 12px;
+  }
+  .masthead-inner{max-width:760px; margin:0 auto;}
+  .kicker{
+    font-family:'Noto Sans TC',sans-serif;
+    font-size:10.5px; letter-spacing:.14em; font-weight:700;
+    color:var(--nejm-red); text-transform:uppercase; margin-bottom:2px;
+  }
+  h1.title{
+    font-family:'Noto Serif TC', serif;
+    font-weight:800;
+    font-size:21px;
+    line-height:1.25;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:.01em;
+  }
+
+  .search-wrap{
+    background:var(--paper); padding:10px 16px 8px;
+  }
+  .search-inner{max-width:760px; margin:0 auto; position:relative;}
+  input.search-box{
+    width:100%;
+    padding:11px 38px 11px 38px;
+    border-radius:9px;
+    border:1.4px solid var(--gray-line);
+    background:var(--paper-card);
+    font-size:16px;
+    font-family:inherit;
+    color:var(--ink);
+    outline:none;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  input.search-box:focus{ border-color:var(--nejm-red); }
+  .search-icon{
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    font-size:15px; color:var(--gray); pointer-events:none;
+  }
+  .clear-btn{
+    position:absolute; right:8px; top:50%; transform:translateY(-50%);
+    background:var(--gray-line); color:var(--ink-soft); border:none;
+    width:24px; height:24px; border-radius:50%; font-size:13px; line-height:1;
+    display:none; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .search-hint{
+    max-width:760px; margin:6px auto 0; font-size:12px; color:var(--gray);
+    display:none; padding:0 2px;
+  }
+
+  .tabs-wrap{
+    background:var(--paper);
+    padding:8px 16px 10px;
+    border-bottom:1px solid var(--gray-line);
+  }
+  .tabs-inner{
+    max-width:760px; margin:0 auto;
+    display:grid; grid-template-columns:repeat(4,1fr); gap:7px;
+  }
+  .tab-btn{
+    text-align:center;
+    padding:8px 3px;
+    border-radius:8px;
+    border:1.4px solid var(--gray-line);
+    background:var(--paper-card);
+    font-family:'Noto Sans TC',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    line-height:1.25;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .tab-btn .tcount{
+    display:block; font-weight:500; font-size:10px; color:var(--gray); margin-top:1px;
+  }
+  .tab-btn[data-tab="adjuvant"].active{ background:var(--c-adjuvant); border-color:var(--c-adjuvant); color:#fff; }
+  .tab-btn[data-tab="mrcc1L"].active{ background:var(--c-mrcc1L); border-color:var(--c-mrcc1L); color:#fff; }
+  .tab-btn[data-tab="mrccLater"].active{ background:var(--c-mrccLater); border-color:var(--c-mrccLater); color:#fff; }
+  .tab-btn[data-tab="nccrcc"].active{ background:var(--c-nccrcc); border-color:var(--c-nccrcc); color:#fff; }
+  .tab-btn.active .tcount{ color:rgba(255,255,255,.75); }
+
+  main{max-width:760px; margin:0 auto; padding:14px 14px 8px;}
+  .section-label{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin:6px 4px 10px;
+  }
+  .section-label .stitle{
+    font-family:'Noto Serif TC', serif; font-weight:700; font-size:15px; color:var(--ink);
+  }
+  .section-label .scount{ font-size:12px; color:var(--gray); font-weight:500; }
+  .cat-chip{
+    display:inline-block; font-size:10px; font-weight:700; letter-spacing:.04em;
+    padding:2px 7px; border-radius:5px; margin-right:6px; vertical-align:middle;
+  }
+  .cat-chip.adjuvant{ background:var(--c-adjuvant-tint); color:var(--c-adjuvant); }
+  .cat-chip.mrcc1L{ background:var(--c-mrcc1L-tint); color:var(--c-mrcc1L); }
+  .cat-chip.mrccLater{ background:var(--c-mrccLater-tint); color:var(--c-mrccLater); }
+  .cat-chip.nccrcc{ background:var(--c-nccrcc-tint); color:var(--c-nccrcc); }
+
+  .card{
+    background:var(--paper-card);
+    border:1px solid var(--gray-line);
+    border-left:5px solid var(--gray-line);
+    border-radius:10px;
+    margin-bottom:12px;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.03);
+  }
+  .card.cat-adjuvant{ border-left-color:var(--c-adjuvant); }
+  .card.cat-mrcc1L{ border-left-color:var(--c-mrcc1L); }
+  .card.cat-mrccLater{ border-left-color:var(--c-mrccLater); }
+  .card.cat-nccrcc{ border-left-color:var(--c-nccrcc); }
+
+  .card-head{
+    padding:14px 14px;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:rgba(166,25,46,0.08);
+    user-select:none;
+    touch-action:manipulation;
+  }
+  .card-head-left{flex:1; min-width:0;}
+  .trial-name{
+    font-family:'Noto Serif TC', serif;
+    font-weight:800; font-size:17px; line-height:1.3; color:var(--ink);
+    margin:0 0 4px 0;
+    word-break:keep-all;
+  }
+  .trial-meta-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px;
+    font-size:12px; color:var(--gray); margin-bottom:5px;
+  }
+  .trial-year{
+    font-weight:700; color:var(--ink-soft);
+  }
+  .dot{ color:var(--gray-line); }
+  .trial-regimen{
+    font-size:13.5px; color:var(--ink-soft); font-weight:600;
+    line-height:1.4;
+  }
+  .combo-tag{
+    display:inline-block;
+    font-size:10.5px; font-weight:700; letter-spacing:.01em;
+    padding:2px 8px; border-radius:20px;
+    background:var(--paper-alt); color:var(--ink-soft);
+    border:1px solid var(--gray-line);
+    margin-top:6px;
+  }
+  .card.cat-adjuvant .combo-tag{ background:var(--c-adjuvant-tint); color:var(--c-adjuvant); border-color:var(--c-adjuvant-tint); }
+  .card.cat-mrcc1L .combo-tag{ background:var(--c-mrcc1L-tint); color:var(--c-mrcc1L); border-color:var(--c-mrcc1L-tint); }
+  .card.cat-mrccLater .combo-tag{ background:var(--c-mrccLater-tint); color:var(--c-mrccLater); border-color:var(--c-mrccLater-tint); }
+  .card.cat-nccrcc .combo-tag{ background:var(--c-nccrcc-tint); color:var(--c-nccrcc); border-color:var(--c-nccrcc-tint); }
+  .status-badge{
+    flex-shrink:0;
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding-top:2px;
+    min-width:52px;
+  }
+  .status-icon{
+    width:30px; height:30px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; font-weight:900; color:#fff;
+  }
+  .status-icon.positive{ background:var(--green); }
+  .status-icon.negative{ background:#9A2E2E; }
+  .status-icon.mixed{ background:var(--amber); font-size:19px; }
+  .status-icon.ongoing{ background:var(--slate); font-size:14px; }
+  .status-text{
+    font-size:9px; font-weight:700; letter-spacing:.02em; text-align:center;
+  }
+  .status-text.positive{ color:var(--green); }
+  .status-text.negative{ color:#9A2E2E; }
+  .status-text.mixed{ color:var(--amber); }
+  .status-text.ongoing{ color:var(--slate); }
+  .chevron{
+    margin-left:2px; color:var(--gray); font-size:12px;
+    transition:transform .2s ease; flex-shrink:0; align-self:center;
+  }
+  .card.expanded .chevron{ transform:rotate(180deg); }
+
+  .card-body{
+    display:none;
+    padding:2px 14px 16px;
+    border-top:1px dashed var(--gray-line);
+  }
+  .card.expanded .card-body{ display:block; }
+
+  .blk{
+    margin-top:14px;
+    border-radius:8px;
+    padding:10px 12px 11px;
+  }
+  .blk-title{
+    display:flex; align-items:center; gap:6px;
+    font-family:'Noto Sans TC',sans-serif;
+    font-weight:700; font-size:12.5px;
+    letter-spacing:.02em;
+    margin-bottom:7px;
+  }
+  .blk ul{ margin:0; padding-left:18px; }
+  .blk li{
+    font-size:14px; line-height:1.62; color:var(--ink); margin-bottom:5px;
+  }
+  .blk li:last-child{ margin-bottom:0; }
+  .blk li strong{ color:var(--nejm-red-dark); font-weight:700; }
+  .blk.neutral{ background:var(--paper-alt); }
+  .blk.neutral .blk-title{ color:var(--ink-soft); }
+  .blk.outcome{ background:var(--nejm-red-tint); }
+  .blk.outcome .blk-title{ color:var(--nejm-red-dark); }
+  .blk.outcome li strong{ color:var(--nejm-red-dark); }
+  .blk.importance{ background:var(--amber-tint); border:1px solid #EBD9A8; }
+  .blk.importance .blk-title{ color:var(--amber); }
+  .blk.updates{ background:var(--blue-tint); }
+  .blk.updates .blk-title{ color:var(--blue); }
+  .blk.phase{
+    background:var(--slate-tint); display:flex; align-items:center; gap:8px;
+    padding:9px 12px; margin-top:10px;
+  }
+  .blk.phase .blk-title{ margin-bottom:0; color:var(--slate); }
+  .blk.phase .fu-value{ font-size:13.5px; font-weight:700; color:var(--ink); }
+  .blk.followup{
+    background:var(--green-tint); display:flex; align-items:center; gap:8px;
+    padding:10px 12px;
+  }
+  .blk.followup .blk-title{ margin-bottom:0; color:var(--green); }
+  .blk.followup .fu-value{ font-size:14px; font-weight:700; color:var(--ink); }
+
+  .no-results{
+    text-align:center; padding:50px 20px; color:var(--gray);
+  }
+  .no-results .nr-icon{ font-size:34px; margin-bottom:10px; }
+  .no-results .nr-text{ font-size:14px; }
+
+  .ref-card{
+    background:var(--paper-card);
+    border:1px solid var(--gray-line);
+    border-left:5px solid var(--amber);
+    border-radius:10px;
+    margin-bottom:14px;
+    padding:14px;
+  }
+  .ref-card .ref-title{
+    font-family:'Noto Serif TC', serif; font-weight:800; font-size:14.5px;
+    color:var(--amber); margin-bottom:8px; display:flex; align-items:center; gap:6px;
+  }
+  .ref-card table{ width:100%; border-collapse:collapse; font-size:12px; }
+  .ref-card th, .ref-card td{
+    border:1px solid var(--gray-line); padding:6px 5px; text-align:left; line-height:1.4;
+  }
+  .ref-card th{ background:var(--paper-alt); font-weight:700; color:var(--ink-soft); font-size:11px; }
+  .ref-card td{ color:var(--ink); }
+  .ref-card .ref-note{ font-size:11.5px; color:var(--gray); margin-top:8px; line-height:1.6; }
+
+  footer.foot{
+    max-width:760px; margin:20px auto 0; padding:14px 16px 6px;
+    border-top:1px solid var(--gray-line);
+    font-size:11px; color:var(--gray); line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="sticky-top">
+  <header class="masthead">
+    <div class="masthead-inner">
+      <div class="kicker">Genitourinary Oncology · Evidence Digest</div>
+      <h1 class="title">Renal Cell Carcinoma Clinical Trial</h1>
+    </div>
+  </header>
+
+  <div class="search-wrap">
+    <div class="search-inner">
+      <span class="search-icon">🔍</span>
+      <input id="searchInput" class="search-box" type="text" inputmode="search"
+        placeholder="搜尋試驗名稱、藥物、regimen 關鍵字…" autocomplete="off">
+      <button class="clear-btn" id="clearBtn" aria-label="清除搜尋">✕</button>
+    </div>
+    <div class="search-hint" id="searchHint"></div>
+  </div>
+
+  <div class="tabs-wrap">
+    <div class="tabs-inner" id="tabsInner"></div>
+  </div>
+</div>
+
+<main id="mainContent"></main>
+
+<footer class="foot">
+  資料整理自臨床試驗文獻摘要，僅供學術與臨床參考，非取代原始文獻或臨床指引判讀。DFS＝Disease-Free Survival；RFS＝Relapse-Free Survival；OS＝Overall Survival；PFS＝Progression-Free Survival；ORR＝Objective Response Rate；HR＝Hazard Ratio；ccRCC＝clear cell RCC；nccRCC＝non-clear cell RCC；IMDC＝International Metastatic RCC Database Consortium risk model；TKI＝Tyrosine Kinase Inhibitor；IO＝Immuno-Oncology（免疫治療）；BICR＝Blinded Independent Central Review；NE＝Not Estimable。
+</footer>
+
+<script>
+const TRIALS = [{"cat": "adjuvant", "name": "KEYNOTE-564", "year": "2021 / 2024", "status": "positive", "regimenShort": "Pembrolizumab（單藥）", "phase": "Phase 3", "arms": ["實驗組：Pembrolizumab（n=496）", "對照組：Placebo（n=498）"], "regimen": ["Pembrolizumab 200 mg IV Q3W，最多 17 個療程（約 1 年）", "Placebo：對應 IV Q3W，最多 17 個療程"], "inclusion": ["Nephrectomy 後（partial/radical，≥12 週前）組織學確診 ccRCC", "Intermediate-high risk（pT2 G4/肉瘤樣、pT3 any G）、High risk（pT4 any G、pT any G N+），或 M1 NED", "ECOG PS 0–1"], "exclusion": ["曾接受 RCC 全身性治療", "需全身性免疫抑制之活動性自體免疫疾病", "殘餘病灶或活動性腦轉移"], "outcome": ["**Primary Endpoint：Disease-Free Survival (DFS)**（investigator-assessed）", "Primary DFS：24 個月 DFS rate 77.3% vs. 68.1%（**HR 0.68**；95% CI 0.53–0.87；p=0.0010）", "Secondary OS（追蹤 57.2 mo）：48 個月 OS rate 91.2% vs. 86.0%（**HR 0.62**；95% CI 0.44–0.87；p=0.005）"], "followup": "57.2 個月", "importance": ["輔助免疫治療歷史性突破——第一個且目前唯一證實 Adjuvant Anti-PD-1 能同時顯著延長 DFS 與 OS 的 Phase 3 試驗", "奠定 Pembrolizumab 作為高復發風險 ccRCC 術後標準輔助治療（Standard of Care）的全球地位"], "updates": ["Landmark OS Analysis（NEJM 2024）：追蹤 57.2 個月，Pembrolizumab 降低 38% 死亡風險（HR 0.62；p=0.005）vs. placebo"], "combo": "IO 單藥"}, {"cat": "adjuvant", "name": "LITESPARK-022", "year": "2026", "status": "positive", "regimenShort": "Pembrolizumab + Belzutifan", "phase": "Phase 3", "arms": ["實驗組：Pembrolizumab + Belzutifan（n=921）", "對照組：Pembrolizumab + Placebo（n=920）"], "regimen": ["Pembrolizumab 400 mg IV Q6W，最多 9 劑（約 1 年）", "Belzutifan 120 mg PO QD，最多 1 年"], "inclusion": ["手術完全切除之 ccRCC", "Intermediate-to-high risk、High risk，或 M1 NED"], "exclusion": ["曾接受 RCC 全身性治療", "缺氧或明顯肺部疾病（HIF-2α 抑制劑禁忌）", "活動性自體免疫疾病"], "outcome": ["**Primary Endpoint：DFS**（investigator-assessed）", "結果：24 個月 DFS rate 80.7%（Pembro+Belzutifan）vs. 73.7%（對照組）（**HR 0.72**；95% CI 0.59–0.87；p<0.001），試驗達陽性結果"], "followup": "28.4 個月", "importance": ["證實在輔助治療 PD-1 抑制劑基礎上加入 HIF-2α 抑制劑（Belzutifan）能進一步降低復發風險", "開創輔助治療「標靶＋免疫」聯合方案的新標竿"], "updates": ["Interim OS analysis：HR 0.78（p=0.24），數據尚未成熟"], "combo": "IO + HIF-2α"}, {"cat": "adjuvant", "name": "IMmotion010", "year": "2022", "status": "negative", "regimenShort": "Atezolizumab（單藥）", "phase": "Phase 3", "arms": ["實驗組：Atezolizumab（n=390）", "對照組：Placebo（n=388）"], "regimen": ["Atezolizumab 1200 mg IV Q3W，共 16 個療程（約 1 年）", "Placebo：對應 IV Q3W，共 16 個療程"], "inclusion": ["組織學確診 RCC，含 clear cell 或 sarcomatoid 成分", "經 radical/partial nephrectomy（合併或不合併 metastasectomy）", "High risk（pT2 G4/肉瘤樣、pT3a G3-4、pT3b-c/pT4 any G、M1 NED）"], "exclusion": ["曾接受 RCC 全身性治療", "活動性自體免疫疾病或曾接受幹細胞/器官移植", "殘餘腫瘤或手術切緣陽性"], "outcome": ["**Primary Endpoint：DFS**（investigator-assessed）", "結果：Median DFS 57.2 mo（Atezolizumab）vs. 49.5 mo（Placebo）（**HR 0.93**；95% CI 0.75–1.15；p=0.50），未達統計顯著"], "followup": "44.7 個月", "importance": ["展現抗 PD-L1 與抗 PD-1 在 RCC 輔助治療的療效差異——首個公佈結果的抗 PD-L1（Atezolizumab）輔助試驗，結果為陰性", "凸顯 PD-1 與 PD-L1 作用機制之不同，可能導致不同的輔助治療成敗"], "updates": ["Biomarker 分析未能找出任何具統計顯著 DFS 獲益的亞群"], "combo": "IO 單藥"}, {"cat": "adjuvant", "name": "PROSPER RCC", "year": "2023", "status": "negative", "regimenShort": "Perioperative Nivolumab", "phase": "Phase 3 (EA8143)", "arms": ["實驗組：Perioperative Nivolumab（n=404）", "對照組：Surgery alone（n=400）"], "regimen": ["實驗組：手術前 Nivolumab 480 mg IV 1 劑，術後輔助 Nivolumab 480 mg IV Q4W 共 9 劑（約 9 個月）", "對照組：單純手術後追蹤觀察"], "inclusion": ["Clinical stage ≥T2 或 any T N+ 之 clear cell 或 non-clear cell RCC，計畫接受手術", "ECOG PS 0–1"], "exclusion": ["遠端轉移疾病（M1 NED 除外）", "活動性自體免疫疾病或長期使用類固醇"], "outcome": ["**Primary Endpoint：Relapse-Free Survival (RFS)**（investigator-assessed）", "結果：Median RFS 兩組均未達（Not Reached）（**HR 0.97**；95% CI 0.74–1.28；p=0.43），因無效（Futility）提前終止"], "followup": "30.4 個月", "importance": ["圍手術期（Perioperative）免疫治療模式的反思——首創「術前單次劑量＋術後輔助」給藥設計", "因無效提前終止，提示單次術前 Nivolumab 可能不足以引發足夠的抗腫瘤 T 細胞反應"], "updates": ["Clear cell vs. non-clear cell 及 PD-L1 亞群分析均未顯示一致獲益"], "combo": "IO 單藥"}, {"cat": "adjuvant", "name": "RAMPART", "year": "2024", "status": "negative", "regimenShort": "Durvalumab ± Tremelimumab", "phase": "Phase 3（多臂平台試驗）", "arms": ["Arm A：Active Surveillance（n≈520）", "Arm B：Adjuvant Durvalumab（n≈520）", "Arm C：Adjuvant Durvalumab + Tremelimumab（n≈520）"], "regimen": ["Arm B：Durvalumab 1500 mg IV Q4W，共 12 個月", "Arm C：Durvalumab 1500 mg IV Q4W 12 個月 + Tremelimumab 75 mg IV（C1D1 與 C2D1）"], "inclusion": ["手術完全切除之 clear cell 或 non-clear cell RCC", "Leibovich risk score 3–11（Intermediate/High risk）"], "exclusion": ["曾接受 RCC 全身性治療", "殘餘病灶或遠端轉移證據"], "outcome": ["**Primary Endpoints：DFS 與 OS**", "結果：無論 Durvalumab 單藥或 Durvalumab + Tremelimumab 雙免疫組合，皆未較 Active Surveillance 顯著改善 DFS/OS"], "followup": "約 42 個月", "importance": ["規模最大的多臂輔助試驗之一，評估 PD-L1 及 PD-L1+CTLA-4 雙免疫輔助治療", "結果確認以抗 PD-L1 為基礎的單藥或雙免疫組合，未能再現 KEYNOTE-564 的療效"], "updates": ["病人自述結果（PROs）及 Leibovich score 亞群分析持續進行中"], "combo": "IO / IO"}, {"cat": "adjuvant", "name": "CHECKMATE-914", "year": "2023 / 2024", "status": "negative", "regimenShort": "Nivolumab ± Ipilimumab", "phase": "Phase 3", "arms": ["Part A：Nivo + Ipi（n=405）vs. Placebo（n=405）", "Part B：Nivo 單藥（n≈410）vs. Placebo（n≈410）"], "regimen": ["Part A：Nivolumab 240 mg Q2W（12 劑）+ Ipilimumab 1 mg/kg Q6W（4 劑），約 24 週", "Part B：Nivolumab 240 mg Q2W 共 12 週，之後改 480 mg Q4W 滿 1 年"], "inclusion": ["Nephrectomy 且切緣陰性之組織學確診 ccRCC", "High risk（pT2 G3–4、pT3–T4 any G，或 N1 M0）"], "exclusion": ["曾接受 RCC 全身性治療", "殘餘腫瘤或遠端轉移（M1 NED 除外）"], "outcome": ["**Primary Endpoint：DFS**（BICR）", "Part A：Median DFS 兩組均未達（**HR 0.92**；95% CI 0.71–1.20；p=0.53），且毒性導致停藥率高達 29%", "Part B：Median DFS 兩組均未達（**HR 0.87**；95% CI 0.62–1.21；p=0.32）"], "followup": "Part A：37.0 個月／Part B：27.0 個月", "importance": ["雙免疫及 Nivolumab 單藥於輔助治療雙重挫敗——24 週短療程雙免疫毒性高且無 DFS 獲益", "Part B 亦證實 Nivo 單藥無效，凸顯與 KEYNOTE-564 的差異"], "updates": ["OS 分析同樣未顯示獲益，確認這些方案不建議使用"], "combo": "IO / IO"}, {"cat": "mrcc1L", "name": "CheckMate 214", "year": "2018 / 2021-22", "status": "positive", "regimenShort": "Nivolumab + Ipilimumab", "phase": "Phase 3", "arms": ["實驗組：Nivolumab + Ipilimumab", "對照組：Sunitinib"], "regimen": ["Nivolumab 3 mg/kg + Ipilimumab 1 mg/kg IV Q3W，共 4 劑，之後 Nivolumab 3 mg/kg Q2W（或 480 mg Q4W）", "Sunitinib 50 mg PO QD，4 週服藥/2 週停藥（6 週為一週期）"], "inclusion": ["組織學確診之晚期或轉移性 clear-cell RCC", "未曾接受 mRCC 全身性治療", "可測量病灶（RECIST v1.1）", "KPS ≥70%"], "exclusion": ["活動性腦轉移", "需全身性類固醇治療之自體免疫疾病", "曾接受 checkpoint inhibitor 或 anti-VEGF 標靶藥物"], "outcome": ["**Co-Primary Endpoints（IMDC Intermediate/Poor-risk）：OS、PFS、ORR**", "OS：47.0 個月（NIVO+IPI）vs. 26.6 個月（Sunitinib）（**HR 0.66**；p<0.001）", "ORR：42% vs. 27%；完全緩解（CR）率 11% vs. 2%", "PFS：11.6 個月 vs. 8.4 個月（**HR 0.73**；p=0.0014）"], "followup": "延伸追蹤達 67.7 個月（約 5.5 年）", "importance": ["確立「雙免疫治療（Dual IO：Anti-PD-1 + Anti-CTLA-4）」在晚期腎細胞癌一線治療的樞紐性地位", "在 IMDC Intermediate/Poor risk 患者中展現代表性的「長尾效應」與高 CR 率，改變過去由 TKI 單藥壟斷的治療格局"], "updates": ["5 年追蹤（ASCO GU）：5 年 OS rate 48% vs. 37%（ITT 族群；55.7 vs. 38.4 個月）；CR rate 達 12% vs. 3%", "達到完全緩解的患者觀察到持久反應"], "combo": "IO / IO"}, {"cat": "mrcc1L", "name": "KEYNOTE-426", "year": "2019 / 2021-23", "status": "positive", "regimenShort": "Pembrolizumab + Axitinib", "phase": "Phase 3", "arms": ["實驗組：Pembrolizumab + Axitinib", "對照組：Sunitinib"], "regimen": ["Pembrolizumab 200 mg IV Q3W（或 400 mg Q6W），最多 24 個月 + Axitinib 5 mg PO BID（可titrate 至 7–10 mg）", "Sunitinib 50 mg PO QD，4 週服藥/2 週停藥"], "inclusion": ["新診斷或復發之 stage IV clear-cell RCC", "未曾接受轉移性疾病全身性治療", "可測量病灶（RECIST v1.1）", "KPS ≥70%"], "exclusion": ["活動性自體免疫疾病", "未治療之中樞神經系統轉移", "未控制之高血壓或嚴重心血管疾病"], "outcome": ["**Dual Primary Endpoints：OS 與 PFS（ITT 族群）**", "OS：45.7 個月（Pembro+Axi）vs. 40.1 個月（Sunitinib）（**HR 0.73**；p<0.001）", "PFS：15.7 個月 vs. 11.1 個月（**HR 0.68**；p<0.0001）", "ORR：59.3% vs. 35.7%（CR 10% vs. 3.5%）"], "followup": "中位追蹤 42.8 個月（最終分析約 48+ 個月）", "importance": ["第一款成功證明「Anti-PD-1 聯合 TKI」在 OS 與 PFS 均顯著優於單藥 Sunitinib 的三期試驗", "使 Pembrolizumab + Axitinib 成為全風險族群（含 IMDC Favorable risk）一線治療的首選方案之一"], "updates": ["延伸追蹤（ASCO 2021／TAU 2023）：持續存活獲益（OS 45.7 vs. 40.1 個月），惟 Favorable-risk 族群 OS HR 隨時間收窄（HR 1.17–1.20）"], "combo": "IO / TKI"}, {"cat": "mrcc1L", "name": "CheckMate 9ER", "year": "2021 / 2023-25", "status": "positive", "regimenShort": "Nivolumab + Cabozantinib", "phase": "Phase 3", "arms": ["實驗組：Nivolumab + Cabozantinib", "對照組：Sunitinib"], "regimen": ["Nivolumab 240 mg IV Q2W（或 480 mg Q4W）+ Cabozantinib 40 mg PO QD", "Sunitinib 50 mg PO QD，4 週服藥/2 週停藥"], "inclusion": ["先前未治療之晚期或轉移性 RCC（含 clear-cell 成分）", "可測量病灶（RECIST v1.1）", "所有 IMDC 風險族群皆納入", "KPS ≥70%"], "exclusion": ["曾接受 RCC 全身性治療", "活動性中樞神經腦轉移或癌性腦膜炎", "嚴重腸胃道出血、穿孔風險或未控制之血管事件"], "outcome": ["**Primary Endpoint：PFS（BICR）**", "PFS：16.4 個月（NIVO+CABO）vs. 8.3 個月（Sunitinib）（**HR 0.58**；p<0.0001）", "OS：46.5 個月 vs. 35.5 個月（**HR 0.79**；p=0.013）", "ORR：55.7% vs. 27.4%（CR 12–14% vs. 4%）"], "followup": "延伸追蹤達 67.6 個月（約 5.5 年）", "importance": ["引入「強效廣譜 TKI（Cabozantinib，具 MET/VEGFR/AXL 抑制）搭配 Anti-PD-1」的組合", "除大幅延長 PFS 和 OS 外，亦記錄患者生活品質（HRQoL）顯著改善，破除「IO+TKI 雙重毒性必降低生活品質」的疑慮"], "updates": ["5.5 年延伸追蹤：持續存活獲益（OS 46.5 vs. 35.5 個月；HR 0.79）與 PFS 獲益（16.4 vs. 8.3 個月；HR 0.58），無新增長期毒性訊號"], "combo": "IO / TKI"}, {"cat": "mrcc1L", "name": "CLEAR", "year": "2021 / 2023-24", "status": "positive", "regimenShort": "Lenvatinib + Pembrolizumab", "phase": "Phase 3", "arms": ["Arm A：Lenvatinib + Pembrolizumab", "Arm B：Lenvatinib + Everolimus", "Arm C：Sunitinib"], "regimen": ["Arm A：Lenvatinib 20 mg PO QD + Pembrolizumab 200 mg IV Q3W", "Arm B：Lenvatinib 18 mg PO QD + Everolimus 5 mg PO QD", "Arm C：Sunitinib 50 mg PO QD，4 週服藥/2 週停藥"], "inclusion": ["晚期 clear-cell RCC，未曾接受全身性治療", "KPS ≥70%", "可測量病灶（RECIST v1.1）"], "exclusion": ["曾接受 mRCC 抗血管新生或 IO 治療", "活動性中樞神經系統轉移", "未控制之心血管疾病或嚴重不癒合傷口"], "outcome": ["**Primary Endpoint：PFS（BICR）**（Arm A vs. Arm C）", "PFS：**23.9 個月**（Lenvatinib+Pembro）vs. 9.2 個月（Sunitinib）（**HR 0.39**；p<0.001）", "OS：53.7 個月 vs. 54.3 個月（**HR 0.79**；95% CI 0.63–0.99；p=0.0424）", "ORR：**71.0%** vs. 36.1%（CR **16.1%** vs. 4.2%）"], "followup": "中位追蹤約 49.8 個月（約 4 年）", "importance": ["創造目前 1L mRCC 三期試驗中最高的客觀緩解率（ORR 71.3%）及極長的無進展生存期（PFS 23.9 個月）", "高達 18.3% 的完全緩解率（CR）接近雙免疫療法，確立高腫瘤負荷或需迅速降低腫瘤體積患者的首選地位"], "updates": ["最終預設 OS 分析（ASCO 2023/2024）：4 年追蹤確認 PFS 優勢持續（HR 0.47）及存活獲益（HR 0.79），各 MSKCC/IMDC 風險族群一致"], "combo": "IO / TKI"}, {"cat": "mrcc1L", "name": "JAVELIN Renal 101", "year": "2019 / 2023-24", "status": "mixed", "regimenShort": "Avelumab + Axitinib", "phase": "Phase 3", "arms": ["實驗組：Avelumab + Axitinib", "對照組：Sunitinib"], "regimen": ["Avelumab 10 mg/kg IV Q2W + Axitinib 5 mg PO BID", "Sunitinib 50 mg PO QD，4 週服藥/2 週停藥"], "inclusion": ["未曾治療之晚期或轉移性 clear-cell RCC", "已檢測 PD-L1 表現（依 PD-L1 狀態分層）", "ECOG PS 0–1"], "exclusion": ["曾接受 anti-VEGF 或免疫檢查點標靶治療", "活動性腦轉移", "活動性自體免疫疾病"], "outcome": ["**Co-Primary Endpoints：PFS 與 OS（PD-L1 陽性族群，≥1% immune cells）**", "PFS：13.8 個月 vs. 7.2 個月（PD-L1+）（**HR 0.61**；p<0.001）；ITT 族群 13.3 vs. 8.0 個月（HR 0.69）", "ORR：51.4% vs. 25.7%（ITT 族群）", "OS（Final）：PD-L1+ 43.2 vs. 36.2 個月（HR 0.86；p=0.0755）；ITT 44.8 vs. 38.9 個月（HR 0.88；p=0.0669），**未達統計顯著**"], "followup": "最短追蹤 68 個月（約 5.5 年）", "importance": ["第一個獲 FDA 批准之「Anti-PD-L1（Avelumab）+ TKI」一線組合", "雖顯著延長 PFS 並提升 ORR，但因後續多線治療交叉干擾，OS 最終未能統計上顯著優於 Sunitinib，國際指南推薦層級略低於其他具 OS 優勢之 IO+TKI 組合"], "updates": ["最終分析（68 個月追蹤）：確認長期 PFS 獲益（5 年 PFS 12.0% vs. 4.4%）與持久反應，惟 OS HR 仍未達統計顯著（整體 HR 0.88）"], "combo": "IO / TKI"}, {"cat": "mrcc1L", "name": "COSMIC-313", "year": "2022 / 2025", "status": "negative", "regimenShort": "Cabozantinib + Nivolumab + Ipilimumab（三聯）", "phase": "Phase 3", "arms": ["實驗組（三聯）：Cabozantinib + Nivolumab + Ipilimumab", "對照組（雙聯）：Placebo + Nivolumab + Ipilimumab"], "regimen": ["實驗組：Cabozantinib 40 mg PO QD + Nivolumab 3 mg/kg IV Q3W + Ipilimumab 1 mg/kg IV Q3W（4 劑），之後 Cabozantinib 40 mg QD + Nivolumab 480 mg Q4W", "對照組：對應安慰劑 + Nivolumab + Ipilimumab 誘導/維持療程"], "inclusion": ["先前未治療之晚期/轉移性 clear-cell RCC", "**限 IMDC Intermediate 或 Poor risk**", "KPS ≥70%"], "exclusion": ["IMDC Favorable-risk RCC", "曾接受 RCC 全身性治療", "活動性腦轉移、嚴重心血管疾病或活動性腸胃道疾患"], "outcome": ["**Primary Endpoint：PFS（前 550 名隨機分配病人，by PIRC）**；**Secondary：OS（ITT）**", "PFS：16.6 個月（三聯）vs. 11.2 個月（雙聯）（HR 0.82；primary analysis **HR 0.73**；p=0.01）", "OS：**41.9 個月（三聯）vs. 42.0 個月（雙聯）**（HR 1.02；95% CI 0.85–1.23；p=0.8366）——**無 OS 獲益**", "ORR：46% vs. 36%；Grade 3/4 治療相關不良事件顯著較高（75% vs. 43%）"], "followup": "中位追蹤 45.0 個月（約 3.75 年）", "importance": ["首個探索「三重聯合方案（Triplet：Dual IO + TKI）」於一線中高風險 mRCC 的三期試驗", "雖延長 PFS，但因顯著增加高級別毒性（停藥率較高）且缺乏 OS 獲益，臨床上未推薦作為標準一線治療"], "updates": ["最終分析（ASCO GU 2025）：OS 無差異（HR 1.02），確認在 NIVO+IPI 雙聯基礎上加入 Cabozantinib 並不能改善整體存活"], "combo": "IO / IO / TKI（三聯）"}, {"cat": "mrcc1L", "name": "PDIGREE (Alliance A031704)", "year": "進行中（2019 啟動）", "status": "ongoing", "regimenShort": "Adaptive Nivo+Ipi → Nivo ± Cabozantinib", "phase": "Phase 3（適應性試驗設計）", "arms": ["誘導期：所有病人接受 Nivolumab 3 mg/kg + Ipilimumab 1 mg/kg IV Q3W × 4 劑", "3 個月適應性分流：CR → 續用 Nivolumab 480 mg Q4W 維持；PD → 改用 Cabozantinib 60 mg QD；Non-CR/Non-PD → 隨機 1:1 分至 Arm A（Nivolumab 480 mg Q4W）或 Arm B（Nivolumab 480 mg Q4W + Cabozantinib 40 mg QD）"], "regimen": ["誘導：NIVO 3mg/kg + IPI 1mg/kg Q3W（4 個療程）", "維持（隨機）：NIVO 480mg Q4W vs. NIVO 480mg Q4W + Cabozantinib 40mg PO QD"], "inclusion": ["組織學確診之轉移性 clear-cell RCC", "先前未曾治療", "**限 IMDC Intermediate 或 Poor risk**", "KPS >70%"], "exclusion": ["IMDC Favorable risk", "曾接受 mRCC 全身性治療", "未控制之自體免疫疾病或同時使用全身性免疫抑制劑"], "outcome": ["**Primary Endpoint：隨機分派之 Non-CR/Non-PD 病人 3 年 OS rate**", "目標假設：將 3 年 OS 從 60%（Nivo 單藥）提升至 70%（Nivo + Cabozantinib）", "結果：最終 primary OS 療效數據**仍在等待**長期存活事件成熟"], "followup": "持續追蹤中", "importance": ["具里程碑意義的「適應性三期臨床試驗（Adaptive Phase 3 Trial）」", "試圖解決臨床痛點：雙免疫誘導後達 Non-CR/Non-PD 之中間反應族群，是否應加用 TKI（Cabozantinib）強化療效，推動 1L mRCC 邁向精準與個體化階梯治療"], "updates": ["ASCO 資料更新：收案已完成，長期存活成熟度及 biomarker（血漿/組織）分析持續進行中"], "combo": "IO / IO（±TKI 適應性）"}, {"cat": "mrccLater", "name": "LITESPARK-005", "year": "2023-24 / 2025-26", "status": "positive", "regimenShort": "Belzutifan（post-IO + post-TKI）", "phase": "Phase 3", "arms": ["實驗組：Belzutifan 120 mg PO QD", "對照組：Everolimus 10 mg PO QD"], "regimen": ["連續口服單藥治療，直至疾病惡化或無法接受之毒性"], "inclusion": ["無法手術切除、局部晚期或轉移性 ccRCC", "曾接受 anti-PD-1/PD-L1 免疫治療**及**至少 1 種 VEGF-TKI（1–3 線先前治療）", "ECOG PS 0–1"], "exclusion": ["曾接受 HIF-2α 抑制劑或 mTOR 抑制劑治療", "活動性中樞神經系統轉移"], "outcome": ["**Dual Primary Endpoints：PFS 與 OS**", "PFS：18 個月 PFS rate 24.0% vs. 8.3%（**HR 0.75**；p=0.0008），顯著改善", "ORR：21.9% vs. 3.5%（p<0.0001）", "OS：趨勢有利 Belzutifan（中位 21.4 vs. 18.1 個月；HR 0.88；p=0.20，未達統計顯著門檻）"], "followup": "25.7 個月", "importance": ["首個證實 HIF-2α 抑制劑在晚期多線抗藥（Post-IO+Post-TKI）ccRCC 患者中優於傳統 mTOR 抑制劑的三期試驗", "奠定 Belzutifan 作為難治型 RCC 後線單藥治療的標準地位，促成全球多國核准"], "updates": ["真實世界研究確認其療效及可控之安全性（貧血、缺氧為主要毒性），於高度預治療真實世界族群中一致"], "combo": "HIF-2α vs. mTOR（Non-IO）"}, {"cat": "mrccLater", "name": "LITESPARK-011", "year": "2026", "status": "positive", "regimenShort": "Belzutifan + Lenvatinib（post-IO 2L）", "phase": "Phase 3", "arms": ["實驗組：Belzutifan + Lenvatinib", "對照組：Cabozantinib（單藥）"], "regimen": ["實驗組：Belzutifan 120 mg PO QD + Lenvatinib 20 mg PO QD", "對照組：Cabozantinib 60 mg PO QD"], "inclusion": ["先前接受 anti-PD-1/PD-L1 checkpoint inhibitor 治療後惡化之晚期 ccRCC（2L 情境）", "依方案分層：TKI-naïve 或最多曾用 1 種 TKI"], "exclusion": ["曾接受 HIF-2α 抑制劑治療", "活動性中樞神經系統轉移"], "outcome": ["**Dual Primary Endpoints：PFS 與 OS**", "PFS：**14.8 個月 vs. 10.7 個月**（Belzutifan+Lenvatinib vs. Cabozantinib）（**HR 0.70**；95% CI 0.58–0.85；p<0.001）", "ORR：**52.6% vs. 39.6%**（p=0.002）", "OS：正向趨勢有利雙藥組合（中位 34.9 vs. 27.6 個月；HR 0.85；p=0.06075，成熟度分析持續中）"], "followup": "29.0 個月", "importance": ["2026 年重磅發表試驗，證實全標靶（Non-IO）雙重阻斷（HIF-2α + 多靶點 TKI）在免疫治療失敗後（Post-IO 2L）擊敗標準單藥 Cabozantinib", "建立二線治療的全新標準組合方案"], "updates": ["FDA/PDUFA 法規審查決議預計於 2026 年底公布"], "combo": "HIF-2α / TKI（Non-IO）"}, {"cat": "mrccLater", "name": "LITESPARK-012", "year": "2026", "status": "negative", "regimenShort": "Triplet（Pembro+Len+Belzutifan／Quimactat）vs. Pembro+Len", "phase": "Phase 3（多臂）", "arms": ["Arm A：Pembrolizumab + Lenvatinib + Belzutifan（三聯）", "Arm B：Pembrolizumab + Lenvatinib + Quimactat（CTLA-4 抑制劑組合）", "對照組：Pembrolizumab + Lenvatinib（標準雙聯）"], "regimen": ["三聯方案 vs. 標準 Pembrolizumab 200 mg IV Q3W + Lenvatinib 20 mg PO QD，皆用於 **1L 未治療 mRCC**"], "inclusion": ["先前未治療（1L）之晚期 clear-cell RCC", "所有 IMDC 風險族群"], "exclusion": ["曾接受 mRCC 全身性治療"], "outcome": ["**Dual Primary Endpoints：PFS 與 OS**", "結果（2026 Top-line）：相較標準 Pembrolizumab + Lenvatinib，**PFS 與 OS 改善皆未達統計顯著**"], "followup": "約 24–30 個月", "importance": ["2026 年重磅「負面驚喜」——顯示一線治療中在已具強效 IO+TKI（Pembro+Lenv）基礎上盲目疊加 HIF-2α 抑制劑或 CTLA-4，雖增加毒性但未帶來實質存活突破", "提示三聯療法（Triplet）在一線未經篩選患者中的侷限性"], "updates": ["詳細 biomarker 亞群分析預計於 2026 年底醫學會議公布，探討特定 IMDC 風險族群是否仍能獲益"], "combo": "IO / TKI / HIF-2α（三聯）"}, {"cat": "mrccLater", "name": "CONTACT-03", "year": "2023 / 2024-25", "status": "negative", "regimenShort": "Atezolizumab + Cabozantinib（Post-ICI）", "phase": "Phase 3", "arms": ["實驗組：Atezolizumab（anti-PD-L1）+ Cabozantinib", "對照組：Cabozantinib（單藥）"], "regimen": ["Atezolizumab 1200 mg IV Q3W + Cabozantinib 60 mg PO QD vs. Cabozantinib 60 mg PO QD"], "inclusion": ["晚期/轉移性 RCC（ccRCC 或 non-ccRCC），於先前 immune checkpoint inhibitor（ICI）治療期間或之後惡化"], "exclusion": ["因嚴重免疫相關不良事件而停用先前 ICI 治療者"], "outcome": ["**Dual Primary Endpoints：PFS 與 OS**", "PFS：10.6 個月（合併組）vs. 10.8 個月（Cabo 單藥）（HR 1.03；95% CI 0.83–1.28；p=0.78）", "OS：25.7 個月 vs. 22.1 個月（HR 0.94；p=0.69）", "毒性：合併組 Grade 3/4 不良事件顯著較高（68% vs. 48%）"], "followup": "15.2 個月", "importance": ["翻轉臨床觀念的里程碑試驗——明確證明先前免疫治療失敗後，「直接再挑戰（Re-challenge）免疫檢查點抑制劑（ICI+TKI）」完全無法帶來額外臨床益處，只顯著增加毒性"], "updates": ["強化標準治療指引，不建議在未經治療空窗期或機轉轉換下常規進行 ICI re-challenge"], "combo": "IO / TKI"}, {"cat": "mrccLater", "name": "TiNIVO-2", "year": "2024 / 2025", "status": "negative", "regimenShort": "Tivozanib + Nivolumab（Post-IO）", "phase": "Phase 3", "arms": ["實驗組：Tivozanib + Nivolumab", "對照組：Tivozanib（單藥）"], "regimen": ["Tivozanib 1.34 mg PO QD（服藥 3 週/停藥 1 週）+ Nivolumab 480 mg IV Q4W vs. Tivozanib 1.34 mg QD 單藥"], "inclusion": ["晚期 ccRCC，先前接受 1 或 2 線治療（含先前 PD-1/PD-L1 抑制劑）後惡化"], "exclusion": ["先前曾接受 Tivozanib 治療"], "outcome": ["**Primary Endpoint：PFS**", "PFS：5.7 個月（合併組）vs. 7.4 個月（Tivozanib 單藥）（HR 1.10；95% CI 0.84–1.43；p=0.49）", "OS：兩組無差異（HR 1.00）"], "followup": "約 12.0 個月", "importance": ["與 CONTACT-03 互為呼應，於高度血管新生 TKI（Tivozanib）基礎上二次證實：PD-1/PD-L1 抑制劑抗藥後，加入抗 PD-1（Nivolumab）並無協同效益", "徹底鎖定「Post-IO 重複使用 PD-1 軸阻斷」這條臨床退路已行不通"], "updates": ["確認 Tivozanib 單藥仍為有效之後線標準治療；後線 Post-IO 組合策略已轉向非免疫機轉（如 HIF-2α + TKI）"], "combo": "TKI / IO"}, {"cat": "mrccLater", "name": "METEOR", "year": "2015 / 2016", "status": "positive", "regimenShort": "Cabozantinib（2L，Post-TKI）", "phase": "Phase 3", "arms": ["實驗組：Cabozantinib", "對照組：Everolimus"], "regimen": ["Cabozantinib 60 mg PO QD vs. Everolimus 10 mg PO QD"], "inclusion": ["晚期 ccRCC，於至少 1 種先前 VEGFR-TKI 治療後疾病惡化"], "exclusion": ["曾接受 Everolimus 或 Cabozantinib 治療"], "outcome": ["**Primary Endpoint：PFS**", "PFS：7.4 個月 vs. 3.8 個月（**HR 0.58**；p<0.001）", "OS：21.4 個月 vs. 16.5 個月（**HR 0.66**；p=0.00026）", "ORR：17% vs. 3%（p<0.001）"], "followup": "18.7 個月", "importance": ["RCC 領域經典試驗——證明多標靶 TKI（MET/VEGFR/AXL 抑制劑 Cabozantinib）在二線全面擊敗傳統 mTOR 抑制劑", "確立 Cabozantinib 於標靶時代作為「二線黃金標準」的歷史地位"], "updates": ["亞群分析顯示 Cabozantinib 對骨轉移控制優異，為後續 RADICAL 等試驗奠定理論基礎"], "combo": "TKI vs. mTOR"}, {"cat": "mrccLater", "name": "LITESPARK-003", "year": "2022-23 / 2024-25", "status": "positive", "regimenShort": "Belzutifan + Cabozantinib（1L 及 2L+）", "phase": "Phase 2（多世代）", "arms": ["Cohort 1：Belzutifan + Cabozantinib（**1L 未治療**）晚期 ccRCC", "Cohort 2：Belzutifan + Cabozantinib（**曾治療 2L+**，post-IO/TKI）晚期 ccRCC"], "regimen": ["Belzutifan 120 mg PO QD + Cabozantinib 60 mg PO QD（連續服藥）"], "inclusion": ["局部晚期或轉移性 clear-cell RCC", "Cohort 1：1L 未治療；Cohort 2：曾接受免疫治療/TKI 治療"], "exclusion": ["曾接受 HIF-2α 抑制劑治療"], "outcome": ["**Primary Endpoint：ORR（RECIST v1.1）**", "Cohort 1（1L）：**ORR = 70.5%**；中位 PFS = **30.3 個月**", "Cohort 2（2L+）：**ORR = 30.8%**；中位 PFS = **13.8 個月**；中位 OS = **26.7 個月**"], "followup": "Cohort 1：24.6 個月／Cohort 2：39.8 個月", "importance": ["首個驗證「HIF-2α 抑制劑＋強效 TKI」此全標靶無免疫（Non-IO Doublet）組合的先驅試驗", "展示一線破紀錄的 70.5% ORR 與超過 30 個月的 PFS，為 LITESPARK-011 等後續三期臨床試驗鋪路"], "updates": ["長期數據確認在高度預治療或無法耐受 IO 之患者中仍具持久療效"], "combo": "HIF-2α / TKI（Non-IO）"}, {"cat": "mrccLater", "name": "RADICAL (Alliance A031801)", "year": "2026（ASCO 期中分析）", "status": "mixed", "regimenShort": "Cabozantinib + Radium-223（骨轉移）", "phase": "Phase 2", "arms": ["實驗組：Cabozantinib + Radium-223（Ra-223）", "對照組：Cabozantinib（單藥）"], "regimen": ["實驗組：Cabozantinib（40 mg 逐步增量至 60 mg QD，依耐受性）+ Radium-223（Alpha 放射性同位素，55 kBq/kg IV Q4W，共 6 劑）", "對照組：Cabozantinib 60 mg PO QD"], "inclusion": ["轉移性 RCC（ccRCC 或 non-ccRCC），**至少 1 處活動性、有症狀之骨轉移**（未曾放療）", "KPS ≥60%", "納入未治療及曾治療患者"], "exclusion": ["曾接受骨標靶放射性藥物治療（如 Radium-223、Strontium-89）", "嚴重血球低下或基線嚴重骨髓毒性"], "outcome": ["**Primary Endpoint：Symptomatic Skeletal Event-Free Survival (SSE-FS)**", "結果（ASCO 2026）：SSE-FS **未達**統計顯著改善（HR 1.39）", "ORR：22.2%（合併組）vs. 22.9%（Cabo 單藥）", "OS（次要終點）：合併組 1 年後生存曲線出現分離，有利合併組（中位 OS 32.2 個月 vs. 21.3 個月）"], "followup": "13.1 個月", "importance": ["專為 mRCC 中最棘手的「骨轉移」族群設計——2026 年最新結果顯示追加骨專一性 Alpha 放射粒子 Ra-223 並未進一步減少骨骼事件（SSE-FS 未達標）", "但觀察到的 OS 延長現象提示此類標靶放射治療可能存在深層的系統性免疫/微環境調控效應"], "updates": ["2026 ASCO 報告：整體試驗中 on-trial SSE 事件率偏低，顯示 Cabozantinib 單藥本身即為 RCC 骨轉移極強效之治療骨幹"], "combo": "TKI + 放射性核種"}, {"cat": "nccrcc", "name": "ESPN", "year": "2016", "status": "negative", "regimenShort": "Everolimus ↔ Sunitinib（交叉）", "phase": "Phase 2（隨機、交叉試驗）", "arms": ["Arm A：一線 Everolimus → 惡化後二線 Sunitinib", "Arm B：一線 Sunitinib → 惡化後二線 Everolimus"], "regimen": ["Everolimus 10 mg PO QD vs. Sunitinib 50 mg PO QD（4 週服藥/2 週停藥）"], "inclusion": ["轉移性 non-clear cell RCC（mnccRCC；含 papillary、chromophobe、unclassified、translocation RCC）", "未曾接受轉移性疾病全身性治療"], "exclusion": ["以 clear cell RCC 為主要組織型態", "曾接受 VEGF-TKI 或 mTOR 抑制劑治療"], "outcome": ["**Primary Endpoint：一線治療 PFS**", "結果：Sunitinib 一線 PFS 數值上較長（中位 6.1 vs. 4.1 個月；HR 1.41，p=0.60）；一線 OS 亦有利 Sunitinib（中位 16.2 vs. 14.9 個月）"], "followup": "約 18.5 個月", "importance": ["早期探索 nccRCC 一線標靶治療應選 VEGF 抑制劑或 mTOR 抑制劑的隨機對照試驗之一", "提示即使在 nccRCC 中，一線使用 TKI（Sunitinib）仍普遍優於 mTOR 抑制劑（Everolimus）"], "updates": ["未有進一步大型驗證性試驗更新，結果由後續 ASPEN 試驗呼應"], "combo": "mTOR / TKI"}, {"cat": "nccrcc", "name": "ASPEN", "year": "2016", "status": "positive", "regimenShort": "Sunitinib vs. Everolimus", "phase": "Phase 2（隨機、開放性標籤）", "arms": ["Arm A：Sunitinib", "Arm B：Everolimus"], "regimen": ["Sunitinib 50 mg PO QD（4/2 schedule）vs. Everolimus 10 mg PO QD"], "inclusion": ["轉移性 non-clear cell RCC（papillary、chromophobe、或 unclassified 組織型態）", "未曾接受轉移性疾病全身性治療"], "exclusion": ["以 clear cell RCC 為主要組織型態", "曾接受標靶全身性治療"], "outcome": ["**Primary Endpoint：PFS**", "結果：Sunitinib 顯著改善中位 PFS（8.3 個月 vs. 5.6 個月；HR 1.41，80% CI 1.03–1.92，p=0.16）", "亞群分析：Sunitinib 於 Good/Intermediate IMDC risk 及 papillary/chromophobe 亞型中優勢明顯；Everolimus 於 Poor risk 展現輕度效益"], "followup": "15.4 個月", "importance": ["與 ESPN 試驗相呼應，奠定 Sunitinib 作為非透明細胞 RCC 一線治療標準對照組（Standard of Care）地位", "證明抗血管新生（Anti-VEGF）仍比單獨阻斷 mTOR 更能有效延緩 nccRCC 疾病進展"], "updates": ["無進一步重大更新，結果已納入後續治療指引參考"], "combo": "TKI vs. mTOR"}, {"cat": "nccrcc", "name": "SAVOIR", "year": "2020", "status": "mixed", "regimenShort": "Savolitinib（MET+ PRCC）vs. Sunitinib", "phase": "Phase 3（提前終止）", "arms": ["實驗組：Savolitinib（高選擇性 MET 抑制劑）", "對照組：Sunitinib"], "regimen": ["Savolitinib 600 mg PO QD（體重 <50 kg 者 400 mg QD）vs. Sunitinib 50 mg PO QD（4/2 schedule）"], "inclusion": ["晚期或轉移性 **MET 驅動型乳頭狀腎細胞癌（PRCC）**（經中央 DNA 定序/copy number 分析確認）", "未曾接受晚期疾病治療"], "exclusion": ["MET 陰性 PRCC 或非乳頭狀 RCC", "曾接受 MET 抑制劑或 VEGF-TKI 治療"], "outcome": ["**Primary Endpoint：PFS**", "因分子篩選困難、招募受限，試驗提前關閉（僅納入 60 名隨機病人）", "PFS：中位 **7.0 個月**（Savolitinib）vs. **5.6 個月**（Sunitinib）（HR 0.71；95% CI 0.37–1.36；p=0.31）", "ORR：**27%**（Savolitinib）vs. **7%**（Sunitinib）；安全性上 Savolitinib 顯著較佳（Grade ≥3 不良事件 42% vs. 81%）"], "followup": "12.2 個月", "importance": ["精準醫學於乳頭狀腎細胞癌（PRCC）領域的里程碑概念驗證試驗", "證實針對 MET 驅動型 PRCC，選擇性 MET 抑制劑（Savolitinib）較通用型 TKI（Sunitinib）帶來更高 ORR 及大幅改善的耐受性"], "updates": ["雖因招募困難提前終止，但正向趨勢支持後續合併治療研究（如 SAMETA）"], "combo": "TKI（MET）vs. TKI"}, {"cat": "nccrcc", "name": "PAPMET (SWOG S1500)", "year": "2021", "status": "positive", "regimenShort": "Cabozantinib vs. Sunitinib（pRCC）", "phase": "Phase 2（隨機、多中心）", "arms": ["Arm 1：Sunitinib（標準對照）", "Arm 2：Cabozantinib（MET/VEGFR2/AXL 抑制劑）", "Arm 3：Crizotinib（因無效提前終止）", "Arm 4：Savolitinib（於未篩選族群因無效提前終止）"], "regimen": ["Cabozantinib 60 mg PO QD vs. Sunitinib 50 mg PO QD（4/2 schedule）"], "inclusion": ["轉移性乳頭狀腎細胞癌（pRCC，Type 1 及 Type 2）", "先前接受 ≤1 線全身性治療（不含 VEGF-TKI/MET 抑制劑）"], "exclusion": ["純 clear cell RCC 或非乳頭狀組織型態"], "outcome": ["**Primary Endpoint：PFS**", "PFS：Cabozantinib 顯著延長 PFS（**9.0 個月 vs. 5.6 個月**；**HR 0.60**；95% CI 0.37–0.97；p=0.019）", "ORR：Cabozantinib **23%** vs. Sunitinib **4%**（p=0.010）"], "followup": "22.4 個月", "importance": ["改變轉移性乳頭狀腎細胞癌（pRCC）臨床指引的關鍵試驗——直接擊敗二十年來的對照標準 Sunitinib", "確立 **Cabozantinib 作為轉移性乳頭狀 RCC 一線標準治療（1L Standard of Care）**"], "updates": ["官方試驗編號為 SWOG S1500；持續作為 pRCC 一線治療指引依據"], "combo": "TKI vs. TKI"}, {"cat": "nccrcc", "name": "KEYNOTE-B61", "year": "2023", "status": "positive", "regimenShort": "Pembrolizumab + Lenvatinib（1L nccRCC）", "phase": "Phase 2（單臂、多中心）", "arms": ["實驗組：Pembrolizumab + Lenvatinib（單臂）"], "regimen": ["Pembrolizumab 200 mg IV Q3W（最多 2 年）+ Lenvatinib 20 mg PO QD"], "inclusion": ["先前未治療（1L）之晚期或轉移性 non-clear cell RCC（含 papillary、chromophobe、unclassified、translocation、renal medullary carcinoma）", "ECOG PS 0–2"], "exclusion": ["曾接受轉移性 nccRCC 全身性治療", "活動性自體免疫疾病或中樞神經系統轉移"], "outcome": ["**Primary Endpoint：ORR（RECIST v1.1，BICR）**", "ORR：**49.0%**（CR 9%、PR 40%），涵蓋所有 nccRCC 亞型；Papillary 54%、Chromophobe 28%、Unclassified 52%", "PFS：中位 **17.9 個月**（95% CI 13.5–21.3）", "OS：24 個月 OS rate **72%**（中位 OS 未達）"], "followup": "22.8 個月", "importance": ["非透明細胞 RCC 歷史上療效最佳的一線組合試驗之一", "證明「PD-1 抑制劑 + 多靶點 TKI（Pembro + Len）」在廣泛的 nccRCC 病理亞型中帶來近 50% 的高緩解率與接近 18 個月的 PFS，將強效 IO+TKI 組合正式拓展至非透明細胞領域"], "updates": ["長期追蹤更新持續進行，各亞型反應率一致"], "combo": "IO / TKI"}, {"cat": "nccrcc", "name": "CheckMate 920（Cohort 1）", "year": "2022", "status": "positive", "regimenShort": "Nivolumab + Ipilimumab（1L nccRCC）", "phase": "Phase 3b/4（多世代）", "arms": ["Cohort 1：Nivolumab + Ipilimumab 用於 non-clear cell RCC（nccRCC）"], "regimen": ["Nivolumab 3 mg/kg + Ipilimumab 1 mg/kg IV Q3W，共 4 劑，之後 Nivolumab 240 mg IV Q2W 或 480 mg Q4W 維持"], "inclusion": ["晚期或轉移性 non-clear cell RCC", "未曾接受轉移性疾病全身性治療", "ECOG PS 0–2"], "exclusion": ["以 clear cell RCC 為主要組織型態"], "outcome": ["**Primary Endpoints：安全性與 investigator-assessed ORR**", "ORR：**19.6%**（95% CI 10.2–32.4%）", "PFS：中位 **3.7 個月**（95% CI 2.7–4.6）", "OS：中位 **21.2 個月**（95% CI 12.0–NE）；Grade 3/4 免疫相關不良事件發生率 37%"], "followup": "24.1 個月", "importance": ["評估「雙免疫檢查點阻斷（Dual IO：Nivo+Ipi）」於一線非透明細胞 RCC 的早期探索試驗", "ORR 與 PFS 相較 clear cell RCC 較為溫和，但部分患者仍能獲得長期 OS 獲益"], "updates": ["結果支持後續進行隨機對照試驗（如 SUNNIFORCAST）評估 Dual IO 在 nccRCC 中的角色"], "combo": "IO / IO"}, {"cat": "nccrcc", "name": "SUNNIFORCAST (AIO-NKR-0113)", "year": "2024-25", "status": "positive", "regimenShort": "Nivolumab + Ipilimumab vs. SOC TKI", "phase": "Phase 2（隨機前瞻性）", "arms": ["實驗組：Nivolumab + Ipilimumab", "對照組：Standard of Care（醫師選擇之 TKI，主要為 Sunitinib）"], "regimen": ["Dual IO（Nivo 3 mg/kg + Ipi 1 mg/kg Q3W × 4 → Nivo 維持）vs. SOC TKI 單藥"], "inclusion": ["先前未治療（1L）之轉移性 non-clear cell RCC", "所有 IMDC 風險族群"], "exclusion": ["以 clear cell RCC 為主要組織型態"], "outcome": ["**Primary Endpoint：12 個月 OS rate**", "12 個月 OS rate：**78%**（Nivo+Ipi）vs. **68%**（SOC TKI）（p=0.026）", "整體存活：HR 0.81（95% CI 0.61–1.09；p=0.163）"], "followup": "約 24 個月", "importance": ["首個在 1L 非透明細胞 RCC 前瞻性隨機對照試驗中，證實「雙免疫治療（Nivo+Ipi）」在整體存活期（OS）上顯著優於傳統單藥 TKI 的關鍵試驗", "為非透明細胞 RCC 提供極具企圖心的無標靶純免疫一線選擇"], "updates": ["進一步隨訪持續評估長期 OS 獲益之持久性"], "combo": "IO / IO vs. TKI"}, {"cat": "nccrcc", "name": "SAMETA", "year": "進行中（2025-26 期中分析）", "status": "ongoing", "regimenShort": "Savolitinib + Durvalumab（MET+ PRCC）", "phase": "Phase 3", "arms": ["Arm A：Savolitinib + Durvalumab（MET 抑制劑 + anti-PD-L1）", "Arm B：Durvalumab（單藥）", "Arm C：Sunitinib（單藥）"], "regimen": ["Savolitinib 600 mg PO QD + Durvalumab 1500 mg IV Q4W vs. Durvalumab 1500 mg IV Q4W vs. Sunitinib 50 mg PO QD（4/2 schedule）"], "inclusion": ["無法手術切除、局部晚期或轉移性 **MET 驅動型乳頭狀腎細胞癌（PRCC）**", "未曾接受晚期疾病治療"], "exclusion": ["MET 陰性或非乳頭狀組織型態", "曾接受 mRCC 全身性治療"], "outcome": ["**Primary Endpoint：PFS（RECIST v1.1，Savolitinib+Durvalumab vs. Sunitinib）**", "結果：主要存活數據**仍在成熟／進行中**"], "followup": "持續追蹤中", "importance": ["基於早期 CALYPSO 試驗顯示 Savolitinib+Durvalumab 於 MET+ PRCC 中高達 57% ORR 的優異協同結果", "為史上首個針對「MET 基因驅動型乳頭狀 RCC」進行的全球性三期臨床試驗，旨在建立「精準標靶＋免疫」的個體化治療新標竿"], "updates": ["期中分析持續進行，正式讀出結果尚待公布"], "combo": "TKI / IO vs. TKI"}, {"cat": "nccrcc", "name": "Cadonilimab + Axitinib", "year": "2026（ASCO Abstract 4501）", "status": "positive", "regimenShort": "Cadonilimab（PD-1/CTLA-4 雙特異性）+ Axitinib", "phase": "Phase 1b/2（單臂）", "arms": ["實驗組：Cadonilimab + Axitinib（單臂）"], "regimen": ["Cadonilimab（AK104，PD-1/CTLA-4 雙特異性抗體）10 mg/kg IV Q3W + Axitinib 5 mg PO BID"], "inclusion": ["先前未治療（1L）之晚期或轉移性 non-clear cell RCC", "可測量病灶（RECIST v1.1）"], "exclusion": ["以 clear cell RCC 為主要組織型態", "曾接受轉移性 nccRCC 全身性治療"], "outcome": ["**Primary Endpoints：安全性與 ORR（RECIST v1.1）**", "Phase 2 世代（n=31）：ORR **51.6%**（疾病控制率 DCR **96.8%**）", "PFS：中位 **14.2 個月**（12 個月 PFS rate 61.2%）", "亞群亮點：**FH 缺失型 RCC（FH-dRCC）** ORR 高達 **81.8%**（9/11）；RP2D 確認為 10 mg/kg Q3W，無治療相關死亡"], "followup": "約 12–15 個月", "importance": ["ASCO 2026 口頭報告亮點試驗——首次證明「雙特異性抗體（PD-1/CTLA-4 雙靶標）+ VEGF-TKI」於難治性非透明細胞 RCC（特別是 FH 缺失型 RCC）一線治療能帶來超過 50% 的驚人緩解率及 14.2 個月的 PFS", "為 nccRCC 帶來全新的前瞻性雙抗聯合療法選項"], "updates": ["正鋪路進行更大規模的三期隨機驗證性試驗，聚焦特定 nccRCC 罕見亞型"], "combo": "IO / TKI"}];
+
+const ADJ_REF_TABLE = {
+  title: "輔助試驗收案條件比較（Eligibility Comparison）",
+  headers: ["Criterion", "KEYNOTE-564", "IMmotion010", "LITESPARK-022", "PROSPER"],
+  rows: [
+    ["pT2 entry","Grade 4 或 sarcomatoid","僅 Grade 4","Grade 4 或 sarcomatoid","cT2b–T4（臨床分期）"],
+    ["pT3a entry","Any Grade","僅 Grade 3–4","Any Grade","N/A（臨床 T 分期）"],
+    ["N+ allowed","是（any pT/G）","是（any pT/G）","是（any pT/G）","是（N1）"],
+    ["M1 NED","是；排除骨/腦；1 年內","是；同時性 vs 異時性（≥12 mo）；無腦轉移","比照 KEYNOTE-564；排除腦；1 年內","無 M1（僅 M0）"],
+    ["Non-ccRCC","排除","允許純 sarcomatoid","排除","所有組織型態"],
+    ["Timing","術後 12 週內","術後 12 週內","術後 12 週內","術前（1 劑）→手術→術後"]
+  ]
+};
+
+const CATS = [
+  {key:'adjuvant',   label:'Adjuvant',        full:'術後輔助治療'},
+  {key:'mrcc1L',     label:'mRCC 1st Line',   full:'轉移性一線治療'},
+  {key:'mrccLater',  label:'mRCC Later Line', full:'轉移性後線治療'},
+  {key:'nccrcc',     label:'nccRCC',          full:'非透明細胞腎癌'}
+];
+
+let state = { tab: 'adjuvant', query: '', expanded: new Set() };
+
+function esc(s){
+  return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+}
+function md(s){
+  let e = esc(s);
+  e = e.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  return e;
+}
+function bulletBlock(title, icon, items, cls){
+  if(!items || !items.length) return '';
+  const lis = items.map(i => `<li>${md(i)}</li>`).join('');
+  return `<div class="blk ${cls}">
+    <div class="blk-title"><span>${icon}</span><span>${title}</span></div>
+    <ul>${lis}</ul>
+  </div>`;
+}
+
+function matchesQuery(t, q){
+  if(!q) return true;
+  const hay = [
+    t.name, t.regimenShort, t.phase, t.year,
+    ...(t.arms||[]), ...(t.regimen||[]), ...(t.inclusion||[]),
+    ...(t.exclusion||[]), ...(t.outcome||[]), t.followup,
+    ...(t.importance||[]), ...(t.updates||[])
+  ].join(' ').toLowerCase();
+  return hay.includes(q.toLowerCase());
+}
+
+function renderTabs(){
+  const wrap = document.getElementById('tabsInner');
+  wrap.innerHTML = CATS.map(c => {
+    const n = TRIALS.filter(t=>t.cat===c.key).length;
+    const active = (state.tab===c.key && !state.query) ? 'active' : '';
+    return `<button class="tab-btn ${active}" data-tab="${c.key}" type="button">
+      ${c.label}<span class="tcount">${n} trials</span>
+    </button>`;
+  }).join('');
+  wrap.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.tab = btn.dataset.tab;
+      const si = document.getElementById('searchInput');
+      si.value=''; state.query='';
+      updateClearBtn();
+      renderTabs();
+      renderContent();
+    });
+  });
+}
+
+const STATUS_LABEL = { positive:'POSITIVE', negative:'NEGATIVE', mixed:'MIXED', ongoing:'ONGOING' };
+const STATUS_ICON  = { positive:'✓', negative:'✕', mixed:'~', ongoing:'⏳' };
+
+function cardHTML(t, idx){
+  const id = 'trial-' + idx;
+  const isOpen = state.expanded.has(id);
+  const st = t.status;
+  const showCat = !!state.query;
+  return `
+  <div class="card cat-${t.cat} ${isOpen?'expanded':''}" data-id="${id}">
+    <div class="card-head" data-toggle="${id}">
+      <div class="card-head-left">
+        <div class="trial-name">${showCat? `<span class="cat-chip ${t.cat}">${t.cat}</span>`:''}${esc(t.name)}</div>
+        <div class="trial-meta-row">
+          <span class="trial-year">${esc(t.year)}</span>
+          <span class="dot">•</span>
+          <span>${esc(t.phase)}</span>
+        </div>
+        <div class="trial-regimen">${esc(t.regimenShort)}</div>
+        ${t.combo ? `<div><span class="combo-tag">${esc(t.combo)}</span></div>` : ''}
+      </div>
+      <div class="status-badge">
+        <div class="status-icon ${st}">${STATUS_ICON[st]}</div>
+        <div class="status-text ${st}">${STATUS_LABEL[st]}</div>
+      </div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="card-body">
+      ${bulletBlock('Treatment Arms（含 Control）','👥', t.arms, 'neutral')}
+      ${bulletBlock('Regimen — 劑量／用法／Cycle','💊', t.regimen, 'neutral')}
+      ${bulletBlock('Inclusion Criteria','✅', t.inclusion, 'neutral')}
+      ${bulletBlock('Exclusion Criteria','🚫', t.exclusion, 'neutral')}
+      ${bulletBlock('Primary Outcome &amp; Results','🎯', t.outcome, 'outcome')}
+      <div class="blk followup">
+        <div class="blk-title"><span>⏱️</span><span>平均 Follow-up</span></div>
+        <div class="fu-value">${esc(t.followup)}</div>
+      </div>
+      ${bulletBlock('Trial 的重要性及影響','⭐', t.importance, 'importance')}
+      ${bulletBlock('重要更新／追蹤報告','📌', t.updates, 'updates')}
+    </div>
+  </div>`;
+}
+
+function refTableHTML(){
+  const r = ADJ_REF_TABLE;
+  const thead = r.headers.map(h=>`<th>${esc(h)}</th>`).join('');
+  const rows = r.rows.map(row => `<tr>${row.map((c,i)=>`<td${i===0?' style="font-weight:700;color:var(--ink-soft);"':''}>${esc(c)}</td>`).join('')}</tr>`).join('');
+  return `<div class="ref-card">
+    <div class="ref-title"><span>📋</span><span>${esc(r.title)}</span></div>
+    <table><thead><tr>${thead}</tr></thead><tbody>${rows}</tbody></table>
+    <div class="ref-note">四項輔助試驗（KEYNOTE-564／IMmotion010／LITESPARK-022／PROSPER）於病理分期、N+、M1 NED 及組織型態的收案條件存在關鍵差異，解讀跨試驗比較結果時應特別留意。</div>
+  </div>`;
+}
+
+function renderContent(){
+  const main = document.getElementById('mainContent');
+  const hint = document.getElementById('searchHint');
+  let list;
+  let headerHTML = '';
+  let extraHTML = '';
+
+  if(state.query){
+    list = TRIALS.filter(t => matchesQuery(t, state.query));
+    hint.style.display = 'block';
+    hint.textContent = `已跨 Adjuvant／mRCC 1st Line／mRCC Later Line／nccRCC 全部類別搜尋 "${state.query}"`;
+    headerHTML = `<div class="section-label">
+        <span class="stitle">搜尋結果</span>
+        <span class="scount">${list.length} 筆符合</span>
+      </div>`;
+  } else {
+    list = TRIALS.filter(t => t.cat === state.tab);
+    hint.style.display = 'none';
+    const catInfo = CATS.find(c=>c.key===state.tab);
+    headerHTML = `<div class="section-label">
+        <span class="stitle">${catInfo.label}　${catInfo.full}</span>
+        <span class="scount">${list.length} trials</span>
+      </div>`;
+    if(state.tab === 'adjuvant'){ extraHTML = refTableHTML(); }
+  }
+
+  if(list.length === 0){
+    main.innerHTML = headerHTML + `<div class="no-results">
+      <div class="nr-icon">🔎</div>
+      <div class="nr-text">找不到符合的試驗，請嘗試其他關鍵字</div>
+    </div>` + extraHTML;
+    return;
+  }
+
+  main.innerHTML = headerHTML + list.map((t,i)=>cardHTML(t, TRIALS.indexOf(t))).join('') + extraHTML;
+
+  main.querySelectorAll('[data-toggle]').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const id = el.getAttribute('data-toggle');
+      const cardEl = el.closest('.card');
+      if(state.expanded.has(id)){
+        state.expanded.delete(id);
+        cardEl.classList.remove('expanded');
+      } else {
+        state.expanded.add(id);
+        cardEl.classList.add('expanded');
+      }
+    });
+  });
+}
+
+function updateClearBtn(){
+  const cb = document.getElementById('clearBtn');
+  cb.style.display = state.query ? 'flex' : 'none';
+}
+
+document.getElementById('searchInput').addEventListener('input', (e)=>{
+  state.query = e.target.value.trim();
+  updateClearBtn();
+  renderTabs();
+  renderContent();
+});
+document.getElementById('clearBtn').addEventListener('click', ()=>{
+  const si = document.getElementById('searchInput');
+  si.value=''; state.query='';
+  si.focus();
+  updateClearBtn();
+  renderTabs();
+  renderContent();
+});
+
+renderTabs();
+renderContent();
+</script>
+</body>
+</html>
